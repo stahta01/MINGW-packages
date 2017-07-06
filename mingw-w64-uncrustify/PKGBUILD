@@ -1,0 +1,46 @@
+# ArchLinux Maintainer: Pierre Neidhardt <ambrevar@gmail.com>
+# ArchLinux Contributor: Auguste Pop <auguste [at] gmail [dot] com>
+
+_realname=uncrustify
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=0.65
+pkgrel=1
+pkgdesc="A source code beautifier"
+arch=("i686" "x86_64")
+url="http://uncrustify.sourceforge.net/"
+license=("GPL")
+depends=("gcc-libs")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake" "python")
+options=('strip')
+source=("http://downloads.sourceforge.net/${_realname}/${_realname}-$pkgver.tar.gz")
+md5sums=('c17f45a38cda2624f6989cab84673e15')
+
+prepare() {
+  cd "$srcdir"/${_realname}-${pkgver}
+# patch -p1 -i ${srcdir}/0001-A-really-important-fix.patch
+# patch -p1 -i ${srcdir}/0002-A-less-important-fix.patch
+}
+
+build() {
+  cd "$srcdir"/${_realname}-${pkgver}
+  [[ -d "${srcdir}"/build-${CARCH} ]] && rm -rf "${srcdir}"/build-${CARCH}
+  mkdir -p "${srcdir}"/build-${CARCH} && cd "${srcdir}"/build-${CARCH}
+
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    ${MINGW_PREFIX}/bin/cmake \
+      -G'MSYS Makefiles' \
+      -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      ../${_realname}-${pkgver}
+
+  make
+}
+
+package() {
+  cd "${srcdir}"/build-${CARCH}
+  make install DESTDIR="${pkgdir}"
+
+#  cd ..
+#  install -d -m755 "$pkgdir"/usr/share/uncrustify
+#  install -m644 etc/*.cfg "$pkgdir"/usr/share/uncrustify
+}
