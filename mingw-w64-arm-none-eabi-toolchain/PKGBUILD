@@ -1,0 +1,318 @@
+# Maintainer : stahta01 <stahta01@gmail.com>
+# Maintainer : Carlos Antunes <cmantunes@gmail.com>
+# Contributer: nanodude
+
+
+_target=arm-none-eabi
+_download_version=7-2018q2
+
+_build_gdb=yes
+
+pkgbase=mingw-w64-${_target}-toolchain
+pkgname=(
+  $([[ "$_build_gdb" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_target}-gdb")
+  "${MINGW_PACKAGE_PREFIX}-${_target}-binutils"
+  "${MINGW_PACKAGE_PREFIX}-${_target}-newlib"
+  "${MINGW_PACKAGE_PREFIX}-${_target}-gcc"
+)
+pkgver=${_download_version/-/_}
+pkgrel=1
+pkgdesc="GNU Tools for ARM Embedded Processors (mingw-w64)"
+arch=('any')
+url="https://launchpad.net/gcc-arm-embedded"
+license=('GPL' 'Various')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc" 'make' 'patch' 'perl' 'tar' 'texinfo')
+options=('staticlibs')
+source=("gcc-arm-embedded-${_download_version}.tar.bz2"::"https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-src.tar.bz2?revision=bf2e4a67-c08c-49d5-b97d-17757cc8a77e"
+        '10-newlib-arm-dynamic-reent.patch')
+sha256sums=('965c5755edffbab0320736285d17de3f4189bee1801099a17f6c9aeb0218acf0'
+            '7522f26659a69e2f02eb37d3557f8dca08bc32ada8c797b6a812ad131c87b0ef')
+noextract=("gcc-arm-embedded-${_download_version}.tar.bz2")
+
+prepare() {
+  # Extract packages from archive
+  rm -rf ${srcdir}/tmp
+  mkdir ${srcdir}/tmp && cd ${srcdir}/tmp
+  tar  xvf ../../gcc-arm-embedded-${_download_version}.tar.bz2 --strip-components=2
+
+  # Copy and extract binutils, GDB, GCC, and Newlib packages
+  cp binutils.tar.bz2 ${srcdir}
+  cp gdb.tar.bz2 ${srcdir}
+  cp gcc.tar.bz2 ${srcdir}
+  cp newlib.tar.bz2 ${srcdir}
+  cd ${srcdir}
+  [ -d binutils ] && rm -rf binutils
+  [ -d gdb ] && rm -rf gdb
+  [ -d gcc ] && rm -rf gcc
+  [ -d newlib ] && rm -rf newlib
+  tar -xf gdb.tar.bz2       --checkpoint=100
+  tar -xf binutils.tar.bz2  --checkpoint=100
+  tar -xf gcc.tar.bz2       --checkpoint=100
+  tar -xf newlib.tar.bz2    --checkpoint=100
+
+  # Newlib
+  cd ${srcdir}/newlib
+  patch -p1 -i "${srcdir}/10-newlib-arm-dynamic-reent.patch"
+}
+
+build() {
+  if check_option "debug" "y"; then
+    BINUTILS_CFLAGS="-O0 -g"
+    NEWLIB_CFLAGS="-O0"
+  else
+    NEWLIB_CFLAGS="-O3"
+  fi
+
+if [ "$_build_gdb" == "yes" ]; then
+  echo "Build GDB"
+  cd $srcdir
+  rm -rf build-gdb-${CARCH}
+  mkdir -p build-gdb-${CARCH} && cd build-gdb-${CARCH}
+  ../gdb/configure \
+    --build="${MINGW_CHOST}" \
+    --host="${MINGW_CHOST}" \
+    --target="${_target}" \
+    --prefix="${MINGW_PREFIX}" \
+    --disable-werror \
+    --disable-nls \
+    --with-system-readline
+  make
+fi
+
+  echo "Build binutils"
+  cd $srcdir
+  rm -rf build-binutils-${CARCH}
+  mkdir -p build-binutils-${CARCH} && cd build-binutils-${CARCH}
+  ../binutils/configure \
+    --build="${MINGW_CHOST}" \
+    --host="${MINGW_CHOST}" \
+    --target="${_target}" \
+    --prefix="${MINGW_PREFIX}" \
+    --disable-werror \
+    --disable-lto \
+    --with-sysroot="${MINGW_PREFIX}" \
+    --disable-nls \
+    --disable-rpath \
+    --enable-multilib \
+    --enable-interwork \
+    CFLAGS="${BINUTILS_CFLAGS}"
+  make
+  make DESTDIR=${srcdir}/temp-install-${CARCH} install
+
+
+  echo "Build Newlib GCC"
+  cd "${srcdir}/gcc"
+
+  # Build cross-compiler just to compile newlib
+  rm -rf "${srcdir}/compiler-${CARCH}"
+  mkdir -p "${srcdir}/compiler-${CARCH}"
+  # Copy some target binutils files, like bin/as.exe, to bootstrap compiler folder
+  cp -a "${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}" "${srcdir}/compiler-${CARCH}"
+  cp -a "${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}" "${srcdir}/compiler-${CARCH}"
+  cd $srcdir
+  rm -rf build-temp-gcc-${CARCH}
+  mkdir -p build-temp-gcc-${CARCH} && cd build-temp-gcc-${CARCH}
+  ../gcc/configure \
+    --build="${MINGW_CHOST}" \
+    --host="${MINGW_CHOST}" \
+    --target="${_target}" \
+    --prefix="${srcdir}/compiler-${CARCH}" \
+    --enable-languages="c" \
+    --disable-werror \
+    --disable-lto \
+    --disable-nls \
+    --disable-libffi \
+    --disable-decimal-float \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --disable-libsanitizer \
+    --disable-threads \
+    --disable-tls \
+    --disable-shared \
+    --enable-multilib \
+    --enable-interwork \
+    --with-newlib \
+    --without-headers \
+    --with-gnu-as \
+    --with-gnu-ld \
+    --with-system-zlib \
+    --with-{gmp,mpfr,mpc,isl}="${MINGW_PREFIX}" \
+    --disable-isl-version-check \
+    --without-cloog \
+    --with-libelf \
+    --with-sysroot="${MINGW_PREFIX}" \
+    --with-build-sysroot="${srcdir}/compiler-${CARCH}" \
+    --with-build-time-tools="${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/bin"
+  make all-gcc
+  make -j1 install-gcc
+
+  echo "Build newlib"
+  local armbinutilspath="${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/bin"
+  local armgccpath="${srcdir}/compiler-${CARCH}/bin"
+  NEWLIB_CFLAGS+=" -g -ffunction-sections -fdata-sections"
+#  NEWLIB_CFLAGS+=" -DMALLOC_PROVIDED"
+#  NEWLIB_CFLAGS+=" -DREENTRANT_SYSCALLS_PROVIDED"
+  cd $srcdir
+  rm -rf build-newlib-${CARCH}
+  mkdir -p build-newlib-${CARCH} && cd build-newlib-${CARCH}
+  ../newlib/configure \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${_target} \
+    --prefix=${MINGW_PREFIX} \
+    --enable-newlib-io-pos-args \
+    --enable-newlib-io-c99-formats \
+    --enable-newlib-io-long-long \
+    --enable-newlib-io-float \
+    --enable-newlib-reent-small \
+    --disable-newlib-supplied-syscalls \
+    --disable-nls \
+    CFLAGS="${NEWLIB_CFLAGS}" \
+    PATH="${armgccpath}:${armbinutilspath}:${PATH}"
+  make PATH="${armgccpath}:${armbinutilspath}:${PATH}"
+  mkdir -p ${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}/lib/thumb
+  mkdir -p ${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}/lib/fpu/
+  make DESTDIR=${srcdir}/temp-install-${CARCH} PATH="${armbinutilspath}:${PATH}" install
+
+  echo "Build GCC"
+  cd $srcdir
+  rm -rf build-gcc-${CARCH}
+  mkdir -p build-gcc-${CARCH} && cd build-gcc-${CARCH}
+  unset CFLAGS
+  unset CXXFLAGS
+  CFLAGS="-g -O3 -fdata-sections -ffunction-sections"
+  CXXFLAGS="${CFLAGS}"
+  ../gcc/configure \
+    --build="${MINGW_CHOST}" \
+    --host="${MINGW_CHOST}" \
+    --target="${_target}" \
+    --prefix="${MINGW_PREFIX}" \
+    --enable-languages="c,c++" \
+    --disable-werror \
+    --disable-lto \
+    --disable-nls \
+    --disable-libffi \
+    --disable-decimal-float \
+    --disable-libgomp \
+    --disable-libmudflap \
+    --disable-libquadmath \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --disable-libsanitizer \
+    --disable-threads \
+    --disable-tls \
+    --disable-shared \
+    --enable-multilib \
+    --enable-interwork \
+    --with-newlib \
+    --with-headers=yes \
+    --with-native-system-header-dir=/include \
+    --with-gnu-as \
+    --with-gnu-ld \
+    --with-system-zlib \
+    --with-python-dir="share/${_target}-gcc" \
+    --with-libelf \
+    --with-{gmp,mpfr,mpc,isl}="${MINGW_PREFIX}" \
+    --without-cloog \
+    --disable-isl-version-check \
+    --with-host-libstdcxx="-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm" \
+    --with-sysroot="${MINGW_PREFIX}" \
+    --with-libs="${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}/lib" \
+    PATH="${armbinutilspath}:${PATH}"
+  make PATH="${armbinutilspath}:${PATH}"
+}
+
+_package_gdb() {
+  pkgdesc="GNU Tools for ARM Embedded Processors - GDB (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+  depends=("${MINGW_PACKAGE_PREFIX}-readline"
+           "${MINGW_PACKAGE_PREFIX}-zlib")
+  options=('staticlibs' '!debug' 'strip')
+
+  cd ${srcdir}/build-gdb-${CARCH}
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Remove files that conflict with target binutils
+  rm -rf ${pkgdir}${MINGW_PREFIX}/share/man/man1
+  rm -rf ${pkgdir}${MINGW_PREFIX}/${_target}/
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-addr2line.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-ar.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-as.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-c++filt.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-elfedit.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-gprof.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-ld.bfd.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-ld.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-nm.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-objcopy.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-objdump.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-ranlib.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-readelf.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-size.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-strings.exe
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/${_target}-strip.exe
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/gdb"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/include/gdb/jit-reader.h"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/lib/libiberty.a"
+}
+
+_package_binutils() {
+  pkgdesc="GNU Tools for ARM Embedded Processors - Binutils (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+  options=('staticlibs')
+
+  cd ${srcdir}/build-binutils-${CARCH}
+  make DESTDIR=${pkgdir} install
+
+  # Remove files that conflict with target gdb
+  rm -f  "${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-gdb.exe"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/man/man5/"
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/gdb"
+  rm -rf "${pkgdir}${MINGW_PREFIX}/include/gdb/jit-reader.h"
+}
+
+_package_newlib() {
+  pkgdesc="GNU Tools for ARM Embedded Processors - Newlib (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_target}-binutils")
+  options=('staticlibs' '!strip' '!emptydirs')
+
+  local armgccpath="${srcdir}/compiler-${CARCH}/bin"
+  cd ${srcdir}/build-newlib-${CARCH}
+  make -j1 DESTDIR=${pkgdir} PATH="${armgccpath}:${PATH}" install
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
+}
+
+_package_gcc() {
+  pkgdesc="GNU Tools for ARM Embedded Processors - GCC (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+  depends=("${MINGW_PACKAGE_PREFIX}-${_target}-newlib"
+           "${MINGW_PACKAGE_PREFIX}-${_target}-binutils")
+  options=('staticlibs' '!debug' '!strip')
+
+  cd ${srcdir}/build-gcc-${CARCH}
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Remove files that conflict with host
+  rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
+}
+
+package_mingw-w64-i686-arm-none-eabi-gdb() { _package_gdb; }
+package_mingw-w64-x86_64-arm-none-eabi-gdb() { _package_gdb; }
+package_mingw-w64-i686-arm-none-eabi-binutils() { _package_binutils; }
+package_mingw-w64-x86_64-arm-none-eabi-binutils() { _package_binutils; }
+package_mingw-w64-i686-arm-none-eabi-newlib() { _package_newlib; }
+package_mingw-w64-x86_64-arm-none-eabi-newlib() { _package_newlib; }
+package_mingw-w64-i686-arm-none-eabi-gcc() { _package_gcc; }
+package_mingw-w64-x86_64-arm-none-eabi-gcc() { _package_gcc; }
