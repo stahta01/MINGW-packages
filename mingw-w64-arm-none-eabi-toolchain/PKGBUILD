@@ -7,13 +7,14 @@ _target=arm-none-eabi
 _download_version=7-2018q2
 
 _build_gdb=no
+_build_gcc=no
 
 pkgbase=mingw-w64-${_target}-toolchain
 pkgname=(
   $([[ "$_build_gdb" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_target}-gdb")
   "${MINGW_PACKAGE_PREFIX}-${_target}-binutils"
   "${MINGW_PACKAGE_PREFIX}-${_target}-newlib"
-  "${MINGW_PACKAGE_PREFIX}-${_target}-gcc"
+  $([[ "$_build_gcc" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_target}-gcc")
 )
 pkgver=${_download_version/-/_}
 pkgrel=1
@@ -177,6 +178,7 @@ fi
   mkdir -p ${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}/lib/fpu/
   make DESTDIR=${srcdir}/temp-install-${CARCH} PATH="${armbinutilspath}:${PATH}" install
 
+if [ "$_build_gcc" == "yes" ]; then
   echo "Build GCC"
   cd $srcdir
   rm -rf build-gcc-${CARCH}
@@ -223,6 +225,7 @@ fi
     --with-libs="${srcdir}/temp-install-${CARCH}${MINGW_PREFIX}/${_target}/lib" \
     PATH="${armbinutilspath}:${PATH}"
   make PATH="${armbinutilspath}:${PATH}"
+fi
 }
 
 _package_gdb() {
