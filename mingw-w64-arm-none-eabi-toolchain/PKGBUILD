@@ -46,7 +46,10 @@ prepare() {
   [ -d gdb ] && rm -rf gdb
   [ -d gcc ] && rm -rf gcc
   [ -d newlib ] && rm -rf newlib
-  tar -xf gdb.tar.bz2       --checkpoint=100
+  if [ "$_build_gdb" == "yes" ]; then
+    echo "Untar GDB"
+    tar -xf gdb.tar.bz2       --checkpoint=100
+  fi
   tar -xf binutils.tar.bz2  --checkpoint=100
   tar -xf gcc.tar.bz2       --checkpoint=100
   tar -xf newlib.tar.bz2    --checkpoint=100
