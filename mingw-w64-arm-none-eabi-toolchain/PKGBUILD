@@ -6,7 +6,7 @@
 _target=arm-none-eabi
 _download_version=7-2018q2
 
-_build_gdb=yes
+_build_gdb=no
 
 pkgbase=mingw-w64-${_target}-toolchain
 pkgname=(
