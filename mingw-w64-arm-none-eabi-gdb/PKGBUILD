@@ -52,27 +52,27 @@ build() {
 
 package() {
   cd ${srcdir}/build-${MINGW_CHOST}
-  make -j1 DESTDIR=${pkgdir} install
+  make -C gdb -j1 DESTDIR=${pkgdir} install
 
-  # Remove files that conflict with arm-none-eabi-binutils
-  rm -rf ${pkgdir}${MINGW_PREFIX}/share/man/man1
-  rm -rf ${pkgdir}${MINGW_PREFIX}/arm-none-eabi
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-addr2line.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ar.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-as.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-c++filt.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-elfedit.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-gprof.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ld.bfd.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ld.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-nm.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-objcopy.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-objdump.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ranlib.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-readelf.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-size.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-strings.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-strip.exe
+  ## Remove files that conflict with arm-none-eabi-binutils
+  #rm -rf ${pkgdir}${MINGW_PREFIX}/share/man/man1
+  #rm -rf ${pkgdir}${MINGW_PREFIX}/arm-none-eabi
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-addr2line.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ar.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-as.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-c++filt.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-elfedit.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-gprof.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ld.bfd.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ld.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-nm.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-objcopy.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-objdump.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-ranlib.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-readelf.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-size.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-strings.exe
+  #rm -f ${pkgdir}${MINGW_PREFIX}/bin/arm-none-eabi-strip.exe
 
   # Remove files that conflict with host
   rm -rf "${pkgdir}${MINGW_PREFIX}/share/info"
