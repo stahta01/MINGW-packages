@@ -1,0 +1,50 @@
+# Based on https://www.archlinux.org/packages/extra/x86_64/goffice/
+
+# Maintainer: Tim Stahlhut <stahta01@gmail.com>
+
+_realname=goffice
+_sourcedir=${_realname}-git
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.10.10
+pkgrel=1
+pkgdesc="A GLib/GTK+ set of document-centric objects and charting library (mingw-w64)"
+url="https://git.gnome.org/browse/goffice"
+arch=('any')
+license=(GPL)
+depends=(${MINGW_PACKAGE_PREFIX}-gtk3 ${MINGW_PACKAGE_PREFIX}-libgsf
+  ${MINGW_PACKAGE_PREFIX}-libxslt)
+makedepends=(git
+  ${MINGW_PACKAGE_PREFIX}-gtk-doc ${MINGW_PACKAGE_PREFIX}-gobject-introspection)
+#_commit=7e659f5414b1358146fa3c5f32696102ef596525  # tags/GOFFICE_0_10_44^0
+_commit=ca20a656c20c6d2d552c96f82f484d741e660f9e  # tags/GOFFICE_0_10_10^
+source=(${_sourcedir}::"git+https://gitlab.gnome.org/GNOME/goffice.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd ${_sourcedir}
+  git describe --tags | sed 's/^GOFFICE_//;s/_/./g;s/-/+/g'
+}
+
+prepare() {
+  cd ${_sourcedir}
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  [[ -d ${srcdir}/build-${MINGW_CHOST} ]] && rm -rf ${srcdir}/build-${MINGW_CHOST}
+  mkdir -p ${srcdir}/build-${MINGW_CHOST} && cd ${srcdir}/build-${MINGW_CHOST}
+
+  ./${_sourcedir}/configure --prefix=${MINGW_PREFIX} \
+      --disable-static --disable-introspection --enable-gtk-doc \
+      --with-gtk --enable-shared --with-lasem=no
+
+# This sed seems to be working; but, likely there is a better fix
+# sed -i -e 's/ -shared / -shared -Wl,--export-all-symbols /g' libtool
+  make -j1
+}
+
+package() {
+  cd ${_sourcedir}
+  make DESTDIR="${pkgdir}" install
+}
