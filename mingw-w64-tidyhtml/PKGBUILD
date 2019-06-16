@@ -15,30 +15,43 @@ makedepends=("cvs"
             "${MINGW_PACKAGE_PREFIX}-pkg-config")
 options=(!strip staticlibs !buildflags)
 
-source=(${_realname}-${pkgver}.tar.bz2
-        mappedio_sizecheck.patch
+source=(mappedio_sizecheck.patch
         version_fix.patch)
-sha256sums=('SKIP'
-            '6e12d8c3c449e57be58c1c90776b34a02136b3cd1904d919f64961abb009f798'
+sha256sums=('6e12d8c3c449e57be58c1c90776b34a02136b3cd1904d919f64961abb009f798'
             'e7a922a29f4f917c3370df09c02af52c9ed936610244415d393ba599b841a87b')
 
-mksource() {
-  mkdir ${_realname}-${pkgver}
-  cd ${_realname}-${pkgver}
-  cvs -d:pserver:anonymous@tidy.cvs.sourceforge.net:/cvsroot/tidy login   #hit enter for password
-  cvs -z3 -d:pserver:anonymous@tidy.cvs.sourceforge.net:/cvsroot/tidy co -P tidy
-  cd ..
-  tar -cvjf ${_realname}-${pkgver}.tar.bz2 ${_realname}-${pkgver}/*
-}
+
+_cvsroot=":pserver:anonymous:@tidy.cvs.sourceforge.net:/cvsroot/tidy"
+_cvsmod="${_realname}"
+
+_build="${srcdir}/$_cvsmod-build${CARCH}"
 
 prepare() {
-  cd ${_realname}-${pkgver}
+  cd "${srcdir}"
+  msg "Connecting to $_cvsmod.sourceforge.net CVS server...."
+  if [ -d $_cvsmod/CVS ]; then
+    cd $_cvsmod
+    cvs -z3 update -d
+  else
+    cvs -z3 -d $_cvsroot co -f -d $_cvsmod
+  fi
+
+  msg "CVS checkout done or server timeout"
+
+  cd "$_cvsmod"
+
   patch -p0 -i ${srcdir}/mappedio_sizecheck.patch
   patch -p0 -i ${srcdir}/version_fix.patch
 }
 
 build(){
-  cd ${_realname}-${pkgver}/tidy
+  msg "Starting build..."
+
+  rm -rf "${_build}"
+  cp -r "${srcdir}/${_cvsmod}" "$_build"
+
+  cd "${_build}"
+
   source build/gnuauto/setup.sh
 
   ./configure \
@@ -50,7 +63,8 @@ build(){
 }
 
 package() {
-  cd ${_realname}-${pkgver}/tidy
+  cd "${_build}"
+
   make DESTDIR=$pkgdir install
 
   install -Dm644 htmldoc/license.html \
