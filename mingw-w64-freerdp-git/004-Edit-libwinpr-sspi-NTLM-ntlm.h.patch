@@ -1,0 +1,34 @@
+From bee25c6d36a73cf6de8ed2e649181ff857edc0ac Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 16 Aug 2019 09:27:09 -0400
+Subject: Edit libwinpr/sspi/NTLM/ntlm.h
+
+---
+ winpr/libwinpr/sspi/NTLM/ntlm.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/winpr/libwinpr/sspi/NTLM/ntlm.h b/winpr/libwinpr/sspi/NTLM/ntlm.h
+index 4f0024880..d391ece48 100644
+--- a/winpr/libwinpr/sspi/NTLM/ntlm.h
++++ b/winpr/libwinpr/sspi/NTLM/ntlm.h
+@@ -79,6 +79,7 @@ typedef enum _NTLM_STATE NTLM_STATE;
+ 
+ enum _NTLM_AV_ID
+ {
++#ifndef __MINGW32__
+ 	MsvAvEOL,
+ 	MsvAvNbComputerName,
+ 	MsvAvNbDomainName,
+@@ -86,7 +87,8 @@ enum _NTLM_AV_ID
+ 	MsvAvDnsDomainName,
+ 	MsvAvDnsTreeName,
+ 	MsvAvFlags,
+-	MsvAvTimestamp,
++#endif
++	MsvAvTimestamp = 7,
+ 	MsvAvSingleHost,
+ 	MsvAvTargetName,
+ 	MsvChannelBindings
+-- 
+2.22.0
+
