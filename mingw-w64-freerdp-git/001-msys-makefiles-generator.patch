@@ -1,0 +1,25 @@
+From 5641419c44e3b71ac79e9d989cafff8e4b7c8e50 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 16 Aug 2019 09:20:37 -0400
+Subject: msys-makefiles-generator
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 53d9ab5e5..01d94bcb7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -486,7 +486,7 @@ if(WIN32)
+ 	add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+ 
+ 	set(CMAKE_USE_RELATIVE_PATH ON)
+-	if (${CMAKE_GENERATOR} MATCHES "NMake Makefile*" OR ${CMAKE_GENERATOR} MATCHES "Ninja*" OR ${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
++	if (${CMAKE_GENERATOR} MATCHES "NMake Makefile*" OR ${CMAKE_GENERATOR} MATCHES "Ninja*" OR ${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "MSYS Makefiles")
+ 		set(CMAKE_PDB_BINARY_DIR ${CMAKE_BINARY_DIR})
+ 	elseif (${CMAKE_GENERATOR} MATCHES "Visual Studio*")
+ 		set(CMAKE_PDB_BINARY_DIR "${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_CONFIG_NAME}")
+-- 
+2.22.0
+

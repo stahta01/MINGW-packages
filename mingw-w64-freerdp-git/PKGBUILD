@@ -1,0 +1,102 @@
+# (MSYS2) Maintainer: Ray Donnelly <mingw.android@gmail.com>
+# (MSYS2) Contributor: Tim Stahlhut <stahta01@gmail.com>
+# (ArchLinux) Maintainer: Christian Hesse <mail@eworm.de>
+# (ArchLinux) Contributor: Alexey Vasiliev <robbinton@gmail.com>
+
+_realname=freerdp
+_sourcedir=${_realname}-git
+pkgbase=mingw-w64-${_realname}-git
+pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}-git
+conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname})
+provides=(${MINGW_PACKAGE_PREFIX}-${_realname})
+pkgdesc="Free RDP client (mingw-w64)"
+pkgver=2.0.0_dev5.c12.gef306fbff
+pkgrel=1
+depends=("${MINGW_PACKAGE_PREFIX}-openssl"
+         "${MINGW_PACKAGE_PREFIX}-ffmpeg")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake")
+arch=('any')
+url="http://www.freerdp.com/"
+license=('Apache License 2.0')
+provides=("${MINGW_PACKAGE_PREFIX}-freerdp")
+source=(${_sourcedir}::"git+https://github.com/FreeRDP/FreeRDP.git"
+        001-msys-makefiles-generator.patch
+        002-mingw-w64-redefinitions.patch
+        003-Edit-winpr-sspi.h.patch
+        004-Edit-libwinpr-sspi-NTLM-ntlm.h.patch
+        005-Edit-client-Windows-wfreerdp.rc.patch
+        006-Fix-WTSAPI32_LOAD_PROC-macro-should-not-concatenate-.patch
+        007-Edit-winpr-include-winpr-smartcard.h.patch
+        008-MinGW-lacks-a-few-error-codes.patch
+        009-Use-WinPR-__lzcnt-on-MinGW.patch
+        010-Edit-libwinpr-utils-debug.c.patch
+        011-Don-t-define-FILE_FS_INFORMATION_CLASS-on-Windows.patch
+        012-Avoid-defining-DECLSPEC_EXPORT-DECLSPEC_IMPORT-if-al.patch
+        015-Edit-server-shadow-Win-win_wds.h.patch)
+sha256sums=('SKIP'
+            '68b2b506832dbb3dc5461ef4790736e6e1a03599bcb1c95530f31be7d5d3e78c'
+            '6699541f747aad247a416f93379d381a4665e6b4c29e603033b78a178e04a14d'
+            'cb218a0db7a3b3acd4e4c933718c3b07da5aedbfc7e1fb2205ff42ee2c6e9189'
+            '058e588cca56cfc791fb5e95c8625d34fbba37c30f3a7d38497c60f3873c0a1b'
+            '60fd8e9f2e996ebed9c30caa32ba2bc4ddb40f8d85dd8bd3673a1f90315deab4'
+            'a1f8ae45f13ee44a2fcb9528a0b9c7701fa21f37f09c1012dfcce763f344030a'
+            'be3a172aa03fe62c5045f5757c416139a30f8e6bb89b0cf84c2977e03d3d26e2'
+            'c576de5e82001627683222db835863c28bc0131bea53a9d33a8a4e2c7ac480cd'
+            '9d5e1bde999fd526e2c97349da170d04576c966b6c84ad232fb0198971ab970a'
+            '296ef537fa9d294cb469057d016c82e01ec8cbe83631520eb96607f90ee88c1d'
+            '2d57333e74e9e4da8ca0074aae232c196e2d32ac6017a701f343ee6d55cf1a49'
+            '2056ecc672822d4277511230757c890172159cc048b31fd0115cc1a1961e33b9'
+            '38be22f93d1098ebbafded0908c7190105063f9d0b955487eae7cb10bc2b3843')
+
+_git_base_commit=
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  _version=$(grep RAW_VERSION_STRING CMakeLists.txt | head -1 | sed -e 's/ //' | sed -e 's/-/_/' | sed -r 's/.*"(.+)".*/\1/')
+  printf "%s.c%s.g%s" "$_version" $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+}
+prepare() {
+  cd ${srcdir}/${_sourcedir}
+  _git_base_commit=$(git rev-parse HEAD)
+  GIT_AM="git am --committer-date-is-author-date"
+  ${GIT_AM} ${srcdir}/001-msys-makefiles-generator.patch
+  ${GIT_AM} ${srcdir}/002-mingw-w64-redefinitions.patch
+  ${GIT_AM} ${srcdir}/003-Edit-winpr-sspi.h.patch
+  ${GIT_AM} ${srcdir}/004-Edit-libwinpr-sspi-NTLM-ntlm.h.patch
+  ${GIT_AM} ${srcdir}/005-Edit-client-Windows-wfreerdp.rc.patch
+  ${GIT_AM} ${srcdir}/006-Fix-WTSAPI32_LOAD_PROC-macro-should-not-concatenate-.patch
+  ${GIT_AM} ${srcdir}/007-Edit-winpr-include-winpr-smartcard.h.patch
+  ${GIT_AM} ${srcdir}/008-MinGW-lacks-a-few-error-codes.patch
+  ${GIT_AM} ${srcdir}/009-Use-WinPR-__lzcnt-on-MinGW.patch
+  ${GIT_AM} ${srcdir}/010-Edit-libwinpr-utils-debug.c.patch
+  ${GIT_AM} ${srcdir}/011-Don-t-define-FILE_FS_INFORMATION_CLASS-on-Windows.patch
+  ${GIT_AM} ${srcdir}/012-Avoid-defining-DECLSPEC_EXPORT-DECLSPEC_IMPORT-if-al.patch
+  # Patches to server code; not really able to be tested because 
+  #   mingw64 is missing too much header data.
+  #${GIT_AM} ${srcdir}/015-Edit-server-shadow-Win-win_wds.h.patch
+}
+
+build() {
+####
+# _IME_CMODES_ used to reduce duplicate defination warning
+# __USE_MINGW_ANSI_STDIO=1 used to reduce warning and maybe prevent run-time errors
+####
+  [[ -d ${CARCH}-build ]] && rm -rf ${CARCH}-build
+  mkdir ${CARCH}-build && cd ${CARCH}-build
+  MSYS2_ARG_CONV_EXCL=-DCMAKE_INSTALL_PREFIX \
+  ${MINGW_PREFIX}/bin/cmake \
+      -G"MSYS Makefiles" \
+      -DCMAKE_C_COMPILER=${MINGW_CHOST}-gcc \
+      -DCMAKE_CXX_COMPILER=${MINGW_CHOST}-g++ \
+      -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      -DCMAKE_C_FLAGS="-D__USE_MINGW_ANSI_STDIO=1 -D_IME_CMODES_" \
+      ../${_sourcedir}
+
+  make -j1 # VERBOSE=1
+}
+
+package() {
+  cd ${CARCH}-build
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 ${srcdir}/${_sourcedir}/LICENSE ${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE
+}

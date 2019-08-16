@@ -1,0 +1,98 @@
+From e5cb590e11a84adddcf30324869c52afa0252260 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 16 Aug 2019 09:26:36 -0400
+Subject: Edit winpr/include/winpr/sspi.h
+
+---
+ winpr/include/winpr/sspi.h | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/winpr/include/winpr/sspi.h b/winpr/include/winpr/sspi.h
+index b4d1375e0..af8a0b230 100644
+--- a/winpr/include/winpr/sspi.h
++++ b/winpr/include/winpr/sspi.h
+@@ -193,13 +193,18 @@ typedef SecPkgInfoW* PSecPkgInfoW;
+ #define SEC_E_ISSUING_CA_UNTRUSTED_KDC		(SECURITY_STATUS)0x80090359L
+ #define SEC_E_KDC_CERT_EXPIRED			(SECURITY_STATUS)0x8009035AL
+ #define SEC_E_KDC_CERT_REVOKED			(SECURITY_STATUS)0x8009035BL
++#endif
++
++#if !defined(_WINERROR_) || defined(__MINGW32__)
+ #define SEC_E_INVALID_PARAMETER			(SECURITY_STATUS)0x8009035DL
+ #define SEC_E_DELEGATION_POLICY			(SECURITY_STATUS)0x8009035EL
+ #define SEC_E_POLICY_NLTM_ONLY			(SECURITY_STATUS)0x8009035FL
+ #define SEC_E_NO_CONTEXT			(SECURITY_STATUS)0x80090361L
+ #define SEC_E_PKU2U_CERT_FAILURE		(SECURITY_STATUS)0x80090362L
+ #define SEC_E_MUTUAL_AUTH_FAILED		(SECURITY_STATUS)0x80090363L
++#endif
+ 
++#if !defined(_WINERROR_)
+ #define SEC_I_CONTINUE_NEEDED			(SECURITY_STATUS)0x00090312L
+ #define SEC_I_COMPLETE_NEEDED			(SECURITY_STATUS)0x00090313L
+ #define SEC_I_COMPLETE_AND_CONTINUE		(SECURITY_STATUS)0x00090314L
+@@ -208,9 +213,11 @@ typedef SecPkgInfoW* PSecPkgInfoW;
+ #define SEC_I_INCOMPLETE_CREDENTIALS		(SECURITY_STATUS)0x00090320L
+ #define SEC_I_RENEGOTIATE			(SECURITY_STATUS)0x00090321L
+ #define SEC_I_NO_LSA_CONTEXT			(SECURITY_STATUS)0x00090323L
++#endif
++
++#if !defined(_WINERROR_) || defined(__MINGW32__)
+ #define SEC_I_SIGNATURE_NEEDED			(SECURITY_STATUS)0x0009035CL
+ #define SEC_I_NO_RENEGOTIATION			(SECURITY_STATUS)0x00090360L
+-
+ #endif
+ 
+ #define SECURITY_NATIVE_DREP			0x00000010
+@@ -256,8 +263,9 @@ typedef SecPkgInfoW* PSecPkgInfoW;
+ #define SECPKG_ATTR_NEGO_STATUS				32
+ #define SECPKG_ATTR_CONTEXT_DELETED			33
+ 
+-#if !defined(_WIN32) || defined(_UWP)
++#if !defined(_WIN32) || defined(_UWP) || defined(__MINGW32__)
+ 
++#if !defined(__MINGW32__)
+ struct _SecPkgContext_AccessToken
+ {
+ 	void* AccessToken;
+@@ -297,6 +305,7 @@ struct _SecPkgContext_ConnectionInfo
+ 	UINT32 dwExchStrength;
+ };
+ typedef struct _SecPkgContext_ConnectionInfo SecPkgContext_ConnectionInfo;
++#endif
+ 
+ struct _SecPkgContext_ClientCreds
+ {
+@@ -312,6 +321,7 @@ struct _SecPkgContex_DceInfo
+ };
+ typedef struct _SecPkgContex_DceInfo SecPkgContex_DceInfo;
+ 
++#if !defined(__MINGW32__)
+ struct _SEC_CHANNEL_BINDINGS
+ {
+ 	UINT32 dwInitiatorAddrType;
+@@ -324,6 +334,7 @@ struct _SEC_CHANNEL_BINDINGS
+ 	UINT32 dwApplicationDataOffset;
+ };
+ typedef struct _SEC_CHANNEL_BINDINGS SEC_CHANNEL_BINDINGS;
++#endif
+ 
+ struct _SecPkgContext_Bindings
+ {
+@@ -332,6 +343,7 @@ struct _SecPkgContext_Bindings
+ };
+ typedef struct _SecPkgContext_Bindings SecPkgContext_Bindings;
+ 
++#if !defined(__MINGW32__)
+ struct _SecPkgContext_EapKeyBlock
+ {
+ 	BYTE rgbKeys[128];
+@@ -476,6 +488,8 @@ typedef SecPkgCredentials_NamesW* PSecPkgCredentials_NamesW;
+ 
+ #endif
+ 
++#endif
++
+ /* InitializeSecurityContext Flags */
+ 
+ #define ISC_REQ_DELEGATE			0x00000001
+-- 

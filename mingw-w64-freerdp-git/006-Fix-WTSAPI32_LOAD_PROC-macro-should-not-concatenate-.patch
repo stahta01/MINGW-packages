@@ -1,0 +1,25 @@
+From 27df0ea628c3441dc04284b8ab0864045581769f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Peter=20=C3=85strand=20=28astrand=29?= <astrand@cendio.se>
+Date: Wed, 9 Jan 2019 12:15:08 +0100
+Subject: Fix WTSAPI32_LOAD_PROC macro; should not concatenate paren
+
+---
+ winpr/libwinpr/wtsapi/wtsapi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/winpr/libwinpr/wtsapi/wtsapi.c b/winpr/libwinpr/wtsapi/wtsapi.c
+index 6794320e8..ecc90d9f8 100644
+--- a/winpr/libwinpr/wtsapi/wtsapi.c
++++ b/winpr/libwinpr/wtsapi/wtsapi.c
+@@ -53,7 +53,7 @@ static HMODULE g_WtsApi32Module = NULL;
+ static WtsApiFunctionTable WtsApi32_WtsApiFunctionTable = { 0 };
+ 
+ #define WTSAPI32_LOAD_PROC(_name, _type) \
+-	WtsApi32_WtsApiFunctionTable.p ## _name = (## _type) GetProcAddress(g_WtsApi32Module, "WTS" #_name);
++	WtsApi32_WtsApiFunctionTable.p ## _name = (_type) GetProcAddress(g_WtsApi32Module, "WTS" #_name);
+ 
+ BOOL WtsApi32_InitializeWtsApi(void)
+ {
+-- 
+2.22.0
+

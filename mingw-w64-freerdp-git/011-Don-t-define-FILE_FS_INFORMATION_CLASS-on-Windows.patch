@@ -1,0 +1,32 @@
+From f5d709093c0ea1fea01e602e28a305f55ef2107f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Peter=20=C3=85strand=20=28astrand=29?= <astrand@cendio.se>
+Date: Wed, 9 Jan 2019 11:23:49 +0100
+Subject: Don't define FILE_FS_INFORMATION_CLASS on Windows
+
+---
+ include/freerdp/channels/rdpdr.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/freerdp/channels/rdpdr.h b/include/freerdp/channels/rdpdr.h
+index b40ae2a5d..90efa3733 100644
+--- a/include/freerdp/channels/rdpdr.h
++++ b/include/freerdp/channels/rdpdr.h
+@@ -298,6 +298,7 @@ enum FILE_FS_DEVICE_FLAG
+ 	FILE_DEVICE_SECURE_OPEN = 0x00000100
+ };
+ 
++#ifndef _WIN32
+ enum FILE_FS_INFORMATION_CLASS
+ {
+ 	FileFsVolumeInformation = 1,
+@@ -311,6 +312,7 @@ enum FILE_FS_INFORMATION_CLASS
+ 	FileFsDriverPathInformation,
+ 	FileFsMaximumInformation
+ };
++#endif
+ 
+ typedef struct _DEVICE DEVICE;
+ typedef struct _IRP IRP;
+-- 
+2.22.0
+

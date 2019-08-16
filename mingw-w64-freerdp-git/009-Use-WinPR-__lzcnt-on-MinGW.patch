@@ -1,0 +1,25 @@
+From 92d814ef5d94e2b31bf99bae9bcf2c438d155829 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Peter=20=C3=85strand=20=28astrand=29?= <astrand@cendio.se>
+Date: Wed, 9 Jan 2019 11:24:57 +0100
+Subject: Use WinPR __lzcnt* on MinGW
+
+---
+ winpr/include/winpr/intrin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/winpr/include/winpr/intrin.h b/winpr/include/winpr/intrin.h
+index c06a1f02e..30e00ce34 100644
+--- a/winpr/include/winpr/intrin.h
++++ b/winpr/include/winpr/intrin.h
+@@ -22,7 +22,7 @@
+ #ifndef WINPR_INTRIN_H
+ #define WINPR_INTRIN_H
+ 
+-#ifndef _WIN32
++#if !defined(_WIN32) || defined(__MINGW32__)
+ 
+ /**
+  * __lzcnt16, __lzcnt, __lzcnt64:
+-- 
+2.22.0
+

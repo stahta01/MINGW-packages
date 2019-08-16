@@ -1,0 +1,34 @@
+From 6d8be86364628bfffc7dfe9a9875905282268dec Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Peter=20=C3=85strand=20=28astrand=29?= <astrand@cendio.se>
+Date: Wed, 9 Jan 2019 11:25:39 +0100
+Subject: MinGW lacks a few error codes
+
+---
+ winpr/include/winpr/error.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/winpr/include/winpr/error.h b/winpr/include/winpr/error.h
+index d07aae780..9635edb15 100644
+--- a/winpr/include/winpr/error.h
++++ b/winpr/include/winpr/error.h
+@@ -27,6 +27,17 @@
+ 
+ #include <winerror.h>
+ 
++/* MinGW support */
++#ifndef RPC_S_PROXY_ACCESS_DENIED
++#define RPC_S_PROXY_ACCESS_DENIED							0x000006C1
++#endif
++#ifndef RPC_S_COOKIE_AUTH_FAILED
++#define RPC_S_COOKIE_AUTH_FAILED							0x00000729
++#endif
++#ifndef ERROR_FILE_TOO_LARGE
++#define ERROR_FILE_TOO_LARGE								0x000000DF
++#endif
++
+ #else
+ 
+ #ifndef NO_ERROR
+-- 
+2.22.0
+

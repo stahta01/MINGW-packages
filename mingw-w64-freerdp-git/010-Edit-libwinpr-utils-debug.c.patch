@@ -1,0 +1,25 @@
+From 683b8abaf1ec6cd996f0cf18a1152bdd4650d7db Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 16 Aug 2019 10:33:59 -0400
+Subject: Edit libwinpr/utils/debug.c
+
+---
+ winpr/libwinpr/utils/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/winpr/libwinpr/utils/debug.c b/winpr/libwinpr/utils/debug.c
+index e344e3aef..59e0cda23 100644
+--- a/winpr/libwinpr/utils/debug.c
++++ b/winpr/libwinpr/utils/debug.c
+@@ -187,7 +187,7 @@ fail:
+ }
+ #endif
+ 
+-#if defined(_WIN32) && (NTDDI_VERSION <= NTDDI_WINXP)
++#if defined(_WIN32) && (NTDDI_VERSION <= NTDDI_WINXP) && !defined(__MINGW32__)
+ 
+ typedef USHORT(WINAPI* PRTL_CAPTURE_STACK_BACK_TRACE_FN)(ULONG FramesToSkip, ULONG FramesToCapture,
+         PVOID* BackTrace, PULONG BackTraceHash);
+-- 
+2.22.0
+

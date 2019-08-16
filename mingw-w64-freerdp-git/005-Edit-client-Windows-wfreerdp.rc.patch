@@ -1,0 +1,31 @@
+From 2a959b0e712aea245db327196bc3a76bfdb844b5 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 16 Aug 2019 11:17:59 -0400
+Subject: Edit client/Windows/wfreerdp.rc
+
+Convert to ASCII and other changes
+---
+ client/Windows/wfreerdp.rc | Bin 1670 -> 813 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+diff --git a/client/Windows/wfreerdp.rc b/client/Windows/wfreerdp.rc
+index e5bfc9c112914cbed8b6ec1ff5f3703e3e4d30c8..5e22a285911b3d2837a98b0eacb9feffc4cde1c7 100644
+GIT binary patch
+literal 813
+zcma))u?~VT5I}dng5Zwv6QE$y2$TRWE{)bEHUc#T9Q-v0KgnMZ5MpZw+O3znckix!
+zKVR00)uims)OG}Icqa&TFOFrw0AdJGvayvjgp|N^akhfeEJ$5OxYHN=IED#~;USc=
+zeOSa^Dh1}^x%0YWHLKWzx~J-<Vz38_Dcu}{kECUHi54NS`|H0<D>=FTga(8pGtkTs
+zn#?}Ybe2h7t?GOsijXNp69N&+<@Yigjg-8RHas#E9fS3Z3{58s^8#gx(DG>gS8BPC
+MgeHotWK2<%KBS?{NB{r;
+
+literal 1670
+zcmcJP(Q3jl7=_REVDBLHUhomt=s-5DSiKoSnXa&+uA{47?BUguxZtAsT`w|9NZX`6
+zU%#aPVSkT1v{B##ORTZQ8*;P|p<@4ql6NYO<mlj?clB)D2I#S6YzhfR=<*r)u(RYD
+z?ns13lb>V4oH4TtGL%30Iy+|ekm(~f-M^qO<i{MHa?S(a<EHqpuD^VaIX1>nVft@l
+zW5M&!KZr7>DyF+h|3j4Fm5yq1?nJ(4u9d>m1&>SDqT3M0)?BY8R$M!uDNEuvWQoF(
+zG%+;ej<Rf);<^vRwdFr|+tP0u*;II%CZ?3}l#2h|$yyjTU71Q&BVC1jyXnj#TMD(W
+o&n!(WP3R|O1xQ%QqzV;^>{PL9n$l-}Q!bBWE6l37JhyBe0oXRt>;M1&
+
+-- 
+2.22.0
+

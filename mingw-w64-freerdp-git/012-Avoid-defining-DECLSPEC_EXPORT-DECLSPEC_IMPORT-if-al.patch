@@ -1,0 +1,64 @@
+From 74c59b3da8219b5274df0e54f981ea58594080ba Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Peter=20=C3=85strand=20=28astrand=29?= <astrand@cendio.se>
+Date: Wed, 9 Jan 2019 12:18:39 +0100
+Subject: Avoid defining DECLSPEC_EXPORT/DECLSPEC_IMPORT if already
+
+---
+ winpr/include/winpr/spec.h | 38 ++++++++++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 12 deletions(-)
+
+diff --git a/winpr/include/winpr/spec.h b/winpr/include/winpr/spec.h
+index d86d91c7e..905bcdba7 100644
+--- a/winpr/include/winpr/spec.h
++++ b/winpr/include/winpr/spec.h
+@@ -956,21 +956,35 @@ char (*__countof_helper(_CountofType (&_Array)[_SizeOfArray]))[_SizeOfArray];
+ 
+ #endif
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__)
+-  #ifdef __GNUC__
+-    #define DECLSPEC_EXPORT __attribute__((dllexport))
+-    #define DECLSPEC_IMPORT __attribute__((dllimport))
++#ifndef DECLSPEC_EXPORT
++  #if defined(_WIN32) || defined(__CYGWIN__)
++    #ifdef __GNUC__
++      #define DECLSPEC_EXPORT __attribute__((dllexport))
++    #else
++      #define DECLSPEC_EXPORT __declspec(dllexport)
++    #endif
+   #else
+-    #define DECLSPEC_EXPORT __declspec(dllexport)
+-    #define DECLSPEC_IMPORT __declspec(dllimport)
++    #if defined(__GNUC__) && __GNUC__ >= 4
++      #define DECLSPEC_EXPORT __attribute__ ((visibility("default")))
++    #else
++      #define DECLSPEC_EXPORT
++    #endif
+   #endif
+-#else
+-  #if defined(__GNUC__) && __GNUC__ >= 4
+-    #define DECLSPEC_EXPORT __attribute__ ((visibility("default")))
+-    #define DECLSPEC_IMPORT
++#endif
++
++#ifndef DECLSPEC_IMPORT
++  #if defined(_WIN32) || defined(__CYGWIN__)
++    #ifdef __GNUC__
++      #define DECLSPEC_IMPORT __attribute__((dllimport))
++    #else
++      #define DECLSPEC_IMPORT __declspec(dllimport)
++    #endif
+   #else
+-    #define DECLSPEC_EXPORT
+-    #define DECLSPEC_IMPORT
++    #if defined(__GNUC__) && __GNUC__ >= 4
++      #define DECLSPEC_IMPORT
++    #else
++      #define DECLSPEC_IMPORT
++    #endif
+   #endif
+ #endif
+ 
+-- 
+2.22.0.windows.1
+
