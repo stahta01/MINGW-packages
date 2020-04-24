@@ -4,7 +4,7 @@ _realname=gtk3
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=3.24.18
-pkgrel=1
+pkgrel=2
 pkgdesc="GObject-based multi-platform GUI toolkit (v3) (mingw-w64)"
 arch=('any')
 url="https://www.gtk.org/"
@@ -47,6 +47,8 @@ prepare() {
   patch -p1 -i "${srcdir}"/0003-gtkwindow-Don-t-force-enable-CSD-under-Windows.patch
 
   patch -p1 -i "${srcdir}"/0004-Disable-low-level-keyboard-hook.patch
+
+  sed -s "s|version: '3.24.17',|version: '${pkgver}',|" -i "${srcdir}/gtk+-${pkgver}/meson.build"
 }
 
 build() {
