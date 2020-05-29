@@ -480,6 +480,7 @@ package_libcxxabi() {
 package_libunwind() {
   pkgdesc='A new implementation of a stack unwinder for C++ exceptions (mingw-w64)'
   url='https://llvm.org/'
+  depends=()
 
   cd "${srcdir}/libunwind"
   ${_make_cmd} -C ../build-libcxx-static-${CARCH}/projects/libunwind DESTDIR="${pkgdir}" install
