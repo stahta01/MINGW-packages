@@ -20,7 +20,7 @@
 ####
 
 _make_verbose=0           # 0 or 1    (PR value is 0)
-_show_log_lockup_info=0   # 0 or 1    (PR value is 0)
+_show_log_lockup_info=1   # 0 or 1    (PR value is 0)
 
 _realname=julia
 pkgbase=mingw-w64-${_realname}
