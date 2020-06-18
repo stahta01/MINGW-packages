@@ -62,6 +62,7 @@ source=("https://ftp.gnu.org/gnu/gcc/${_realname}-${pkgver%%+*}/${_realname}-${p
         0015-makedeps-properly-handle-win-paths.patch
         0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
         0021-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch
+        0023-ALL_ADAFLAGS-filter-out-Wno-pedantic-ms-format.patch
         0130-libstdc++-in-out.patch
         0140-gcc-8.2.0-diagnostic-color.patch)
 sha256sums=('b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2'
@@ -82,6 +83,7 @@ sha256sums=('b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2'
             '4233a8d893787413b316de3ac320fd65c46844d463b98c0a98fdc17100cca505'
             '276ecc392c777d4b17d771a987e80dca50ff25d8f65671d5de139be73997064b'
             'c7359f4c7015bc1fb02bc13449fa9826669273bd1f0663ba898decb67e8487fc'
+            'ece86b56f34b33f851629feee6d07238a8ddda125e851d0862f3e63e2d6ecb06'
             '441d63d95622ffcc2fa5dd688aecad20d2ab16d7d275c567865a754e1d3d4b7a'
             '5240a9e731b45c17a164066c7eb193c1fbee9fd8d9a2a5afa2edbcde9510da47')
 
@@ -125,7 +127,8 @@ prepare() {
     0014-gcc-9-branch-clone_function_name_1-Retain-any-stdcall-suffix.patch \
     0015-makedeps-properly-handle-win-paths.patch \
     0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch \
-    0021-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch
+    0021-gcc-config-i386-mingw32.h-Ensure-lmsvcrt-precede-lke.patch \
+    0023-ALL_ADAFLAGS-filter-out-Wno-pedantic-ms-format.patch
 
   apply_patch_with_msg \
     0130-libstdc++-in-out.patch
