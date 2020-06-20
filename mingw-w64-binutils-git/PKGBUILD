@@ -3,10 +3,11 @@
 
 _realname=binutils
 _base_ver=2.25
+_sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 # replaces="${MINGW_PACKAGE_PREFIX}-${_realname}=${_base_ver}"
-pkgver=2.25.r82131.aae60b2
+pkgver=2.25.r82139.2f8367b520
 pkgrel=1
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}=${pkgver}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
@@ -20,7 +21,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-libiconv" "${MINGW_PACKAGE_PREFIX}-zlib")
 makedepends=("${MINGW_PACKAGE_PREFIX}-libiconv" "${MINGW_PACKAGE_PREFIX}-zlib" "git")
 options=('staticlibs' '!distcc' '!ccache' 'debug' '!strip')
 #install=binutils.install
-source=("${_realname}"::"git+https://sourceware.org/git/binutils-gdb.git#branch=${_realname}-${_base_ver//./_}-branch"
+source=("${_sourcedir}"::"git+https://sourceware.org/git/binutils-gdb.git#branch=${_realname}-${_base_ver//./_}-branch"
         0001-MinGW-w64-Two-fixes-for-unusual-files.patch
         0002-MinGW-w64-Fix-libiberty-makefile.patch
         0003-MinGW-w64-Fix-libibery-configure.patch
@@ -34,12 +35,12 @@ sha256sums=('SKIP'
             'bd38317b28b894d5c0e0ba043fc2445af415f6e96bb9ac93c348748d21a43625')
 
 pkgver() {
-  cd "$srcdir/$_realname"
+  cd "$srcdir/${_sourcedir}"
   printf "%s.r%s.%s" "${_base_ver}" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 prepare() {
-  cd ${srcdir}/${_realname}
+  cd ${srcdir}/${_sourcedir}
   git am "${srcdir}"/0001-MinGW-w64-Two-fixes-for-unusual-files.patch
   git am "${srcdir}"/0002-MinGW-w64-Fix-libiberty-makefile.patch
   git am "${srcdir}"/0003-MinGW-w64-Fix-libibery-configure.patch
@@ -63,7 +64,7 @@ build() {
   cd $srcdir
   rm -rf build-${MINGW_CHOST}
   mkdir -p build-${MINGW_CHOST} && cd build-${MINGW_CHOST}
-  ../${_realname}/configure \
+  ../${_sourcedir}/configure \
     --build=${MINGW_CHOST} \
     --host=${MINGW_CHOST} \
     --target=${MINGW_CHOST} \
