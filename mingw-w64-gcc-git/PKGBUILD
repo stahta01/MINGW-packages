@@ -38,7 +38,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-${_realname}"
              "${MINGW_PACKAGE_PREFIX}-windows-default-manifest"
              "${MINGW_PACKAGE_PREFIX}-winpthreads"
              "${MINGW_PACKAGE_PREFIX}-zlib")
-#checkdepends=('dejagnu')
+checkdepends=('dejagnu')
 optdepends=()
 options=('staticlibs' '!emptydirs') # '!strip' 'debug')
 
@@ -213,13 +213,13 @@ build() {
   fi
 }
 
-#check() {
-  #cd ${srcdir}/build-${MINGW_CHOST}
-  #make -j1 -k check-lto || true
+check() {
+  cd ${srcdir}/build-${MINGW_CHOST}
+  make -j1 -k check-lto || true
   #make -j1 -k check-c++ || true
   #make -j1 -k check-c   || true
-  #make -j1 -k check-ada || true
-#}
+  make -j1 -k check-ada || true
+}
 
 package_mingw-w64-gcc-libs-git() {
   pkgdesc="GNU Compiler Collection (libraries) for MinGW-w64"
