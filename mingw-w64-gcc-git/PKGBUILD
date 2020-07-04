@@ -215,6 +215,8 @@ build() {
 
 #check() {
   #cd ${srcdir}/build-${MINGW_CHOST}
+  #make -j1 -k check-lto || true
+  #make -j1 -k check-c++ || true
   #make -j1 -k check-c   || true
   #make -j1 -k check-ada || true
 #}
