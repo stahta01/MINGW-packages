@@ -17,7 +17,7 @@ _wx_basever=3.1
 _wx_buildver=
 
 pkgbase=mingw-w64-${_basename}${_wx_basever}
-pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}${_wx_basever}"
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}${_wx_basever}") # "${MINGW_PACKAGE_PREFIX}-wxconfig${_wx_basever}")
 pkgver=${_wx_basever}.4
 pkgrel=1
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
@@ -199,19 +199,18 @@ _package_wxmsw() {
   mv ${pkgdir}${MINGW_PREFIX}/lib/*.dll ${pkgdir}${MINGW_PREFIX}/bin
 
   # Rename files
-  mv ${pkgdir}${MINGW_PREFIX}/bin/wx-config{,-${_wx_basever}}
   mv ${pkgdir}${MINGW_PREFIX}/share/aclocal/wxwin.m4 ${pkgdir}${MINGW_PREFIX}/share/aclocal/wxwin${_wx_basever}.m4
 
   # Add missing exe file extension (Likely bug in wxWidgets makefile)
   mv ${pkgdir}${MINGW_PREFIX}/bin/wxrc-${_wx_basever} ${pkgdir}${MINGW_PREFIX}/bin/wxrc-${_wx_basever}.exe
 
-  # Remove conflicting files; that do NOT need to be renamed.
+  # Remove files that conflict with release package.
   rm -f ${pkgdir}${MINGW_PREFIX}/bin/wxrc.exe
-  rm -f ${pkgdir}${MINGW_PREFIX}/bin/wx-config
-
-  # Remove conflicting files; that I have no idea how to rename
   rm -fr ${pkgdir}${MINGW_PREFIX}/share/bakefile
   rm -fr ${pkgdir}${MINGW_PREFIX}/share/locale
+
+  # Remove files that are now in seperate package
+  rm -f ${pkgdir}${MINGW_PREFIX}/bin/wx-config 
 
   # License files
   cd "${srcdir}"/${_basename}-${pkgver}${_wx_buildver}/docs
@@ -223,5 +222,21 @@ _package_wxmsw() {
   install -Dm644 xserver.txt  "${pkgdir}${MINGW_PREFIX}/share/licenses/${_basename}${_wx_basever}/xserver.txt"
 }
 
+_package_wxconfig() {
+  pkgdesc="config script for wxWidgets library (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-wxWidgets")
+  provides=("${MINGW_PACKAGE_PREFIX}-wxconfig")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-wxconfig" "${MINGW_PACKAGE_PREFIX}-wxWidgets")
+
+  cd "${srcdir}"/build-${CARCH}-shared
+  make DESTDIR="${pkgdir}" install-wxconfig
+
+  cp ${pkgdir}${MINGW_PREFIX}/bin/wx-config ${pkgdir}${MINGW_PREFIX}/bin/wx-config-${_wx_basever}
+
+  rm -f ${pkgdir}${MINGW_PREFIX}/lib/wx/config/msw-unicode-${_wx_basever}
+}
+
 package_mingw-w64-i686-wxmsw3.1() { _package_wxmsw; }
 package_mingw-w64-x86_64-wxmsw3.1() { _package_wxmsw; }
+package_mingw-w64-i686-wxconfig3.1() { _package_wxconfig; }
+package_mingw-w64-x86_64-wxconfig3.1() { _package_wxconfig; }
