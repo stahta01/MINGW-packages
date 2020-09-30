@@ -7,10 +7,11 @@
 _realname=wxWidgets
 _wx_basever=3.0
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-provides=("${MINGW_PACKAGE_PREFIX}-wxmsw${_wx_basever}")
+provides=("${MINGW_PACKAGE_PREFIX}-wxmsw${_wx_basever}" "${MINGW_PACKAGE_PREFIX}-wxconfig" "${MINGW_PACKAGE_PREFIX}-wxconfig${_wx_basever}")
+conflicts=("${MINGW_PACKAGE_PREFIX}-wxconfig" "${MINGW_PACKAGE_PREFIX}-${_realname}${_wx_basever}")
 pkgbase=mingw-w64-${_realname}
 pkgver=${_wx_basever}.5.1
-pkgrel=1
+pkgrel=2
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
 arch=('any')
 license=("custom:wxWindows")
@@ -124,6 +125,8 @@ package() {
 
   cd "${srcdir}"/build-${CARCH}
   make DESTDIR="${pkgdir}" install
+
+  cp ${pkgdir}${MINGW_PREFIX}/bin/wx-config ${pkgdir}${MINGW_PREFIX}/bin/wx-config-${_wx_basever}
 
   mv ${pkgdir}${MINGW_PREFIX}/lib/*.dll ${pkgdir}${MINGW_PREFIX}/bin
 
