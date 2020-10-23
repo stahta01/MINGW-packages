@@ -1,0 +1,25 @@
+From fa02c52ce358c759c4c1712744f2315341dc5646 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 23 Oct 2020 08:28:03 -0400
+Subject: In GetThemeSysFont prototype use LOGFONTW
+
+---
+ mingw-w64-headers/include/uxtheme.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-headers/include/uxtheme.h b/mingw-w64-headers/include/uxtheme.h
+index 61539860..d4f43c98 100644
+--- a/mingw-w64-headers/include/uxtheme.h
++++ b/mingw-w64-headers/include/uxtheme.h
+@@ -353,7 +353,7 @@ THEMEAPI_(COLORREF) GetThemeSysColor(HTHEME hTheme,int iColorId);
+ THEMEAPI_(HBRUSH) GetThemeSysColorBrush(HTHEME hTheme,int iColorId);
+ THEMEAPI_(WINBOOL) GetThemeSysBool(HTHEME hTheme,int iBoolId);
+ THEMEAPI_(int) GetThemeSysSize(HTHEME hTheme,int iSizeId);
+-THEMEAPI GetThemeSysFont(HTHEME hTheme,int iFontId,LOGFONT *plf);
++THEMEAPI GetThemeSysFont(HTHEME hTheme,int iFontId,LOGFONTW *plf);
+ THEMEAPI GetThemeSysString(HTHEME hTheme,int iStringId,LPWSTR pszStringBuff,int cchMaxStringChars);
+ THEMEAPI GetThemeSysInt(HTHEME hTheme,int iIntId,int *piValue);
+ THEMEAPI_(WINBOOL) IsThemeActive();
+-- 
+2.29.0.windows.1
+
