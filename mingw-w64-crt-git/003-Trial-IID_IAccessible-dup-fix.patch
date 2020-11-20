@@ -1,0 +1,25 @@
+From 7fbcc4a138b85173f9d71c3cf6b275c9b5e073ff Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 20 Nov 2020 16:56:34 -0500
+Subject: Trial IID_IAccessible dup fix
+
+---
+ mingw-w64-headers/include/oleacc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-headers/include/oleacc.h b/mingw-w64-headers/include/oleacc.h
+index 7719fd37..34b43c6d 100644
+--- a/mingw-w64-headers/include/oleacc.h
++++ b/mingw-w64-headers/include/oleacc.h
+@@ -326,7 +326,7 @@ typedef IAccessible *LPACCESSIBLE;
+ 
+ #define DISPID_ACC_DODEFAULTACTION (-5018)
+ 
+-DEFINE_GUID(IID_IAccessible, 0x618736e0, 0x3c3d, 0x11cf, 0x81,0x0c, 0x00,0xaa,0x00,0x38,0x9b,0x71);
++//DEFINE_GUID(IID_IAccessible, 0x618736e0, 0x3c3d, 0x11cf, 0x81,0x0c, 0x00,0xaa,0x00,0x38,0x9b,0x71);
+ #if defined(__cplusplus) && !defined(CINTERFACE)
+ MIDL_INTERFACE("618736e0-3c3d-11cf-810c-00aa00389b71")
+ IAccessible : public IDispatch
+-- 
+2.29.2.windows.2
+

@@ -20,10 +20,12 @@ conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 options=('!strip' 'staticlibs' '!buildflags' '!emptydirs')
 source=("mingw-w64"::"git+https://git.code.sf.net/p/mingw-w64/mingw-w64#commit=$_commit"
         0001-Allow-to-use-bessel-and-complex-functions-without-un.patch
-        0002-DirectX-9-fixes-for-VLC.patch)
+        0002-DirectX-9-fixes-for-VLC.patch
+        003-Trial-IID_IAccessible-dup-fix.patch)
 sha256sums=('SKIP'
             'd641257f7e1469aff89adc33e57702b75fe9667ca035978f890eae1020b6814c'
-            '09b1c7b62f666a07609af57e10c2b0ad815b78356f4b0f1fb6d827a1109a0ec7')
+            '09b1c7b62f666a07609af57e10c2b0ad815b78356f4b0f1fb6d827a1109a0ec7'
+            '1e0ff92719d3102034d8c80cbe5f51d29b430ee39dc51d6fb9528090c2472615')
 
 pkgver() {
   cd "${srcdir}/mingw-w64"
@@ -38,6 +40,7 @@ prepare() {
 
   git am --committer-date-is-author-date "${srcdir}/0001-Allow-to-use-bessel-and-complex-functions-without-un.patch"
   git am --committer-date-is-author-date "${srcdir}/0002-DirectX-9-fixes-for-VLC.patch"
+  git am --committer-date-is-author-date "${srcdir}/003-Trial-IID_IAccessible-dup-fix.patch"
 }
 
 build() {
