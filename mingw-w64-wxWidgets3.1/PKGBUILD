@@ -96,17 +96,32 @@ build() {
   #   --disable-mediactrl
   ####
 
+  if check_option "buildflags" "y"; then
+  # Remove the -O and -ggdb options to avoid configuration warnings
+  # from the normal settings found in /etc/makepkg_mingw??.conf
+
+  CXXFLAGS=${CXXFLAGS/-Og }
+  CXXFLAGS=${CXXFLAGS/-O2 }
+  CXXFLAGS=${CXXFLAGS/-ggdb }
+
+  CFLAGS=${CFLAGS/-Og }
+  CFLAGS=${CFLAGS/-O2 }
+  CFLAGS=${CFLAGS/-ggdb }
+  fi
+
+
   local -a _debug_options=()
 
   if check_option "debug" "y"; then
-    _debug_options+=("--enable-debug=yes")
-#   _debug_options+=("--enable-debug=max")
     _debug_options+=("--enable-debug_gdb")
+    _debug_options+=("--enable-debug_info")
+    _debug_options+=("--enable-debug=max")
   else
     _debug_options+=("--enable-optimise")
     _debug_options+=("--enable-debug=yes")
   fi
 
+  #echo "CXXFLAGS := ${CXXFLAGS}"
   #echo "_debug_options := ${_debug_options[@]}"
 
   [[ -d "${srcdir}"/build-${CARCH}-shared ]] && rm -rf "${srcdir}"/build-${CARCH}-shared
