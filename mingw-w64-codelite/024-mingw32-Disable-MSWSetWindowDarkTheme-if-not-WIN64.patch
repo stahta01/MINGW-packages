@@ -1,0 +1,25 @@
+From feebe51d61d5353ed7c0610d76927b1bd7c415da Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sat, 31 Jul 2021 19:33:08 -0400
+Subject: mingw32: Disable MSWSetWindowDarkTheme() if not WIN64
+
+Work around that stops run-time statup up crash.
+
+---
+ Plugin/globals.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Plugin/globals.cpp b/Plugin/globals.cpp
+index beb7bddb1..6d19eed0f 100644
+--- a/Plugin/globals.cpp
++++ b/Plugin/globals.cpp
+@@ -102,7 +102,7 @@
+ const wxEventType wxEVT_COMMAND_CL_INTERNAL_0_ARGS = ::wxNewEventType();
+ const wxEventType wxEVT_COMMAND_CL_INTERNAL_1_ARGS = ::wxNewEventType();
+ 
+-#ifdef __WXMSW__
++#if defined(__WXMSW__) && defined(_WIN64)
+ 
+ typedef BOOL(WINAPI* ADMFA)(BOOL allow);                    // AllowDarkModeForApp
+ typedef BOOL(WINAPI* ADMFW)(HWND window, BOOL allow);       // AllowDarkModeForWindow
+-- 

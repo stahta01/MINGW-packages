@@ -1,0 +1,69 @@
+From 23dc69f21b52211c2e6e5076e48f3ad1b736ee50 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 26 Jul 2021 16:46:45 -0400
+Subject: cmake: Rewrite FindSqlite3.cmake and logic using it
+
+---
+ CMakeLists.txt                  | 10 +++++++++-
+ cmake/Modules/FindSqlite3.cmake | 19 +++++++++++++------
+ 2 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 001c45921..442a6e610 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -60,10 +60,18 @@ else()
+     set( CL_SRC_ROOT ${CMAKE_CURRENT_SOURCE_DIR}) # which seems to be the same, at least in this situation
+ endif()
+ 
+-include(FindSqlite3)
++if( UNIX AND NOT APPLE)
++    include(FindSqlite3)
++    set(SQLITE3_FOUND ${SQLITE3_FOUND})
++else()
++    set(SQLITE3_FOUND FALSE)
++endif()
+ include(UtilsHelper)
+ 
+ if(NOT SQLITE3_FOUND)
++    if(UNIX AND NOT APPLE)
++        message(FATAL_ERROR " **** Could not find Sqlite3. Please install libsqlite3-dev package **** ")
++    endif()
+     set(SQLITE3_INCLUDE_DIR ${CL_SRC_ROOT}/sqlite3)
+     set(SQLITE3_LIBRARY "-lsqlite3lib")
+ endif()
+diff --git a/cmake/Modules/FindSqlite3.cmake b/cmake/Modules/FindSqlite3.cmake
+index d39f5a4e6..38f4915c4 100644
+--- a/cmake/Modules/FindSqlite3.cmake
++++ b/cmake/Modules/FindSqlite3.cmake
+@@ -1,4 +1,11 @@
+-if(UNIX AND NOT APPLE)
++#  Try to find Sqlite3
++#  Once done this will define values if library is found
++#    SQLITE3_FOUND - system has Sqlite3
++#    SQLITE3_INCLUDE_DIR - the Sqlite3 include directory
++#    SQLITE3_LIBRARY - Link these to use Sqlite3
++#
++
++if(NOT DEFINED SQLITE3_FOUND)
+     find_library(SQLITE3_LIBRARY
+                  NAMES libsqlite3.so
+                  HINTS
+@@ -17,11 +24,11 @@ if(UNIX AND NOT APPLE)
+     if (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
+        set(SQLITE3_FOUND TRUE)
+     endif()
+-    
+-    if(NOT SQLITE3_FOUND)
+-        message(FATAL_ERROR " **** Could not find Sqlite3. Please install libsqlite3-dev package **** ")
++
++    if(SQLITE3_FOUND)
++      message("-- SQLITE3_INCLUDE_DIR: " ${SQLITE3_INCLUDE_DIR})
++      message("-- SQLITE3_LIBRARY: " ${SQLITE3_LIBRARY})
+     else()
+-        message("-- SQLITE3_INCLUDE_DIR: " ${SQLITE3_INCLUDE_DIR})
+-        message("-- SQLITE3_LIBRARY: " ${SQLITE3_LIBRARY})
++      message(-- "Could not find system Sqlite3. Using bundled sqlite3")
+     endif()
+ endif()
+-- 

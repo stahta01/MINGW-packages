@@ -1,0 +1,46 @@
+From baeefd44aa24188ef2bf9347709b46dba24c431d Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sat, 7 Aug 2021 12:37:37 -0400
+Subject: Add TestDir/CMakeLists.txt and
+
+add_subdirectory(TestDir) in root CMakeLists.txt.
+---
+ CMakeLists.txt         |  1 +
+ TestDir/CMakeLists.txt | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
+ create mode 100644 TestDir/CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ef012f19f..55bb2abfb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -724,6 +724,7 @@ if(NOT SDK_ONLY)
+     add_subdirectory(codelite_echo)
+     if(MINGW)
+         add_subdirectory(sdk/wxconfig)
++        add_subdirectory(TestDir)
+     endif()
+     if(DEBUG_BUILD)
+         add_subdirectory(CodeCompletionsTests)
+diff --git a/TestDir/CMakeLists.txt b/TestDir/CMakeLists.txt
+new file mode 100644
+index 000000000..ff0109aeb
+--- /dev/null
++++ b/TestDir/CMakeLists.txt
+@@ -0,0 +1,15 @@
++# define minimum cmake version
++cmake_minimum_required(VERSION 3.0)
++
++project(TestDir)
++
++# wxWidgets include (this will do all the magic to configure everything)
++include( "${wxWidgets_USE_FILE}" )
++
++# prepare list of files
++set(SRCS "makedir.cpp")
++
++# Define the output
++add_executable(makedir ${SRCS})
++target_link_libraries(makedir ${wxWidgets_LIBRARIES})
++CL_INSTALL_EXECUTABLE(makedir)
+-- 

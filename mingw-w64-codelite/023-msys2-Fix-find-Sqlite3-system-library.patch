@@ -1,0 +1,100 @@
+From ab12086979b86d5a6cdf9bc0993d7d5ff49db1eb Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 28 Jul 2021 18:27:53 -0400
+Subject: msys2: Fix find Sqlite3 system library
+
+This patch is partly based on a MSys2 MinGW package patch with unknown author.
+
+---
+ CMakeLists.txt                   |  2 +-
+ cmake/Modules/FindSqlite3.cmake  | 44 ++++++++++++++++++++++----------
+ sdk/databaselayer/CMakeLists.txt |  6 ++++-
+ 3 files changed, 36 insertions(+), 16 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 93ce0656f..0ddef88ab 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -60,7 +60,7 @@ else()
+     set( CL_SRC_ROOT ${CMAKE_CURRENT_SOURCE_DIR}) # which seems to be the same, at least in this situation
+ endif()
+ 
+-if( UNIX AND NOT APPLE)
++if( MINGW OR UNIX AND NOT APPLE)
+     include(FindSqlite3)
+     set(SQLITE3_FOUND ${SQLITE3_FOUND})
+ else()
+diff --git a/cmake/Modules/FindSqlite3.cmake b/cmake/Modules/FindSqlite3.cmake
+index 38f4915c4..4a92fbdd3 100644
+--- a/cmake/Modules/FindSqlite3.cmake
++++ b/cmake/Modules/FindSqlite3.cmake
+@@ -6,21 +6,37 @@
+ #
+ 
+ if(NOT DEFINED SQLITE3_FOUND)
++    # use pkg-config to get the directories and then use these values
++    # in the FIND_PATH() and FIND_LIBRARY() calls
++    find_package(PkgConfig)
++    if(PKG_CONFIG_FOUND)
++      pkg_check_modules(_SQLITE3 sqlite3)
++    endif()
++    find_path(SQLITE3_INCLUDE_DIR
++      NAMES
++        sqlite3.h
++      HINTS
++        ${_SQLITE3_INCLUDE_DIRS}
++        $ENV{SQLITE3DIR}/include
++        /usr/include
++        /usr/include/sqlite3
++        /usr/local/include
++        /opt/local/include
++    )
++
+     find_library(SQLITE3_LIBRARY
+-                 NAMES libsqlite3.so
+-                 HINTS
+-                 /usr/local/lib
+-                 /usr/lib
+-                 /usr/lib/x86_64-linux-gnu
+-                 /usr/lib/i386-linux-gnu
+-                 )
+-                 
+-    find_path(SQLITE3_INCLUDE_DIR NAMES sqlite3.h
+-              HINTS 
+-              /usr/local/include
+-              /usr/include
+-              /usr/include/sqlite3
+-              )
++      NAMES
++        sqlite3
++      HINTS
++        ${_SQLITE3_LIBRARY_DIRS}
++        $ENV{SQLITE3DIR}/lib
++        /usr/lib
++        /usr/lib/x86_64-linux-gnu
++        /usr/lib/i386-linux-gnu
++        /usr/local/lib
++        /opt/local/lib
++    )
++
+     if (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
+        set(SQLITE3_FOUND TRUE)
+     endif()
+diff --git a/sdk/databaselayer/CMakeLists.txt b/sdk/databaselayer/CMakeLists.txt
+index be15274a6..f94972ab6 100644
+--- a/sdk/databaselayer/CMakeLists.txt
++++ b/sdk/databaselayer/CMakeLists.txt
+@@ -72,7 +72,11 @@ endif ( WITH_MYSQL )
+ 
+ # Define the output
+ add_library(databaselayersqlite SHARED ${SRCS} ${MYSQL_SRCS})
+-target_link_libraries(databaselayersqlite ${LINKER_OPTIONS} ${wxWidgets_LIBRARIES})
++if ( MINGW AND SQLITE3_FOUND )
++    target_link_libraries(databaselayersqlite ${LINKER_OPTIONS} ${wxWidgets_LIBRARIES} ${SQLITE3_LIBRARY})
++else()
++    target_link_libraries(databaselayersqlite ${LINKER_OPTIONS} ${wxWidgets_LIBRARIES})
++endif()
+ 
+ if(APPLE)
+     install(TARGETS databaselayersqlite DESTINATION ${CMAKE_BINARY_DIR}/codelite.app/Contents/MacOS/)
+-- 

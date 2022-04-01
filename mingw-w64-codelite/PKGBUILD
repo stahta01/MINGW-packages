@@ -7,8 +7,8 @@ pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=15.0
-pkgrel=4
+pkgver=15.0.6
+pkgrel=1
 pkgdesc="Open-source, cross platform IDE for the C/C++ programming languages (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
@@ -31,51 +31,29 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-boost"
             )
 options=(strip staticlibs !debug)
 
-# wget --timeout=20 https://github.com/eranif/codelite/archive/15.0.tar.gz
-source=("${_realname}-${pkgver}.tar.gz::https://github.com/eranif/codelite/archive/${pkgver}.tar.gz"
-        001-include-winsock-header.patch
-        002-mingw-use-wx-manifests.patch
-        003-use-gnu-extensions.patch
-        004-windows-headers-conflict.patch
-        005-cl-15-fix-sqlite3-find-and-build.patch
-        006-proper-libraries-names-mingw.patch
-        007-strip-whitespaces-flags.patch
-        010-strange-conflicts.patch
-        011-backport-use-ToStdString.patch
-        013-fix-linking-libraries-names.patch
-        014-fix-link-dup-error.patch
-        015-remove-WXDLLIMPEXP_SDK-from-codelite_terminal.patch
-        016-mingw-Set-better-target-names.patch)
-sha256sums=('9dd5679660a9d1a51186fcbb2d0d44655f0bc8bedeb2ee57b28c9776f139353f'
-            'f1babfd20f19c417d32392d7200950fec93ea27022ec1e377f7d4b89332df3da'
-            'cfac30a871df28c19330f0cc607ac57b64ae54896af22c0e189de4f76c0738b7'
-            'fbed169ac80a8679c3b5fadb2521a61745c98eebb65050a088d82240b0da37d5'
-            '7b8d62c0af7cce47de53be38f5b4e517b464e19f60785e9757bbe9340608928d'
-            '1430a6d08ea97b1e9d748f6f73a80fdfe3be2ec414588d9c0519ed84bccac66c'
-            '6208622ed2060fe399ccc9ec510507b2102809178a70d4cf7b17cd806cdc308d'
-            'a9e5539e31c664a84e42412cdd30b44699a92efb2fb6f51000010bb958c10219'
-            '5a6312aa0373587cf89e5a025fa81dc4f249a37db103e133a27bb15f4a611d1b'
-            '534ca3b9482ae01f240d50e6a3d57fbe000991e007b0d9f80f4e973b79ac2661'
-            'd1f58f6c7afcb13453004d56db32640427e214fe3c96faacbddd270e4f5137ed'
-            '73352c5718538f022407cec30b57e5805accd5f32dcabae2b431c68a64c0e418'
-            'd4f90a769e060c048cf4fb3fe907271fe22378fcdf0b82ec4969d77c2936045c'
-            'e9f37907e7ebb0199eae9f504c518f808486503357b8cf8c3ea22987bab05f3d')
+source=("${_realname}-${pkgver}.tar.gz::https://github.com/eranif/codelite/archive/${pkgver/.0.0/.0}.tar.gz"
+        021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch
+        022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch
+        023-msys2-Fix-find-Sqlite3-system-library.patch
+        024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch
+        025-Add-sdk-wxconfig-CMakeLists.txt-and.patch
+        026-Add-TestDir-CMakeLists.txt-and.patch)
+sha256sums=('28430c37d163219b1001b6e539e520e4f3e750ea5b8ee2457d92d0961fee15bb'
+            'f3f3e48c79301a928775a5d5a7d403e362fbc324bd9c571a3052b96118c379d8'
+            '5ec52ce83119934443788206f703bcc8e8ab99ddc9d9023951c686d50d14c0fe'
+            '99f89bf0c038467e297bb5cfd5538ec7209ce1ec299757a4876c917f6e6224ab'
+            'a0bc6bc98fcb6e49749a5c3d4bde5da5c0052416bda2e7fc6b0375e209381c26'
+            '049539e5acb8714dadc900f0f89c03d5b0d9c6c7e4efa5dc6f9efaf048baf478'
+            '2e93813b242f9609ab219b695104859991135c9eee5f7e6208a4bb1152260b65')
 
 prepare() {
   cd "${srcdir}/${_realname}-${pkgver}"
-  patch -p1 -i ${srcdir}/001-include-winsock-header.patch
-  patch -p1 -i ${srcdir}/002-mingw-use-wx-manifests.patch
-  patch -p1 -i ${srcdir}/003-use-gnu-extensions.patch
-  patch -p1 -i ${srcdir}/004-windows-headers-conflict.patch
-  patch -p1 -i ${srcdir}/005-cl-15-fix-sqlite3-find-and-build.patch
-  patch -p1 -i ${srcdir}/006-proper-libraries-names-mingw.patch
-  patch -p1 -i ${srcdir}/007-strip-whitespaces-flags.patch
-  #patch -p1 -i ${srcdir}/010-strange-conflicts.patch
-  patch -p1 -i ${srcdir}/011-backport-use-ToStdString.patch
-  patch -p1 -i ${srcdir}/013-fix-linking-libraries-names.patch
-  patch -p1 -i ${srcdir}/014-fix-link-dup-error.patch
-  patch -p1 -i ${srcdir}/015-remove-WXDLLIMPEXP_SDK-from-codelite_terminal.patch
-  patch -p1 -i ${srcdir}/016-mingw-Set-better-target-names.patch
+  patch -p1 -i ${srcdir}/021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch
+  patch -p1 -i ${srcdir}/022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch
+  patch -p1 -i ${srcdir}/023-msys2-Fix-find-Sqlite3-system-library.patch
+  patch -p1 -i ${srcdir}/024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch
+  patch -p1 -i ${srcdir}/025-Add-sdk-wxconfig-CMakeLists.txt-and.patch
+  patch -p1 -i ${srcdir}/026-Add-TestDir-CMakeLists.txt-and.patch
 }
 
 build() {
@@ -87,6 +65,8 @@ build() {
     extra_config+=( -DCMAKE_BUILD_TYPE=Release )
   fi
 
+  extra_config+=( -Wno-dev ) # Hides developer warnings
+
   # disables the part of urlmon.h that defines IsLoggingEnabled
   # This replaces 010-strange-conflicts.patch
   CXXFLAGS+=" -D_HITLOGGING_DEFINED=0"
@@ -95,12 +75,9 @@ build() {
   cd build-${MINGW_CHOST}
   MSYS2_ARG_CONV_EXCL="-DCL_PREFIX=" \
   ${MINGW_PREFIX}/bin/cmake \
-    -Wno-dev \
     -G"MSYS Makefiles" \
     -DCL_PREFIX=${MINGW_PREFIX} \
-    -DENABLE_CLANG=1 \
-    -DWITH_WEBVIEW=1 \
-    -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
+    -DWITH_WX_CONFIG=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
     -DwxWidgets_wxrc_EXECUTABLE=${MINGW_PREFIX}/bin/wxrc-${_wx_basever} \
     "${extra_config[@]}" \
     ../${_realname}-${pkgver}

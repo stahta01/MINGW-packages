@@ -1,0 +1,46 @@
+From 4e5d37fde06e641162df203bcb7dd06806238f36 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 26 Jul 2021 16:51:33 -0400
+Subject: cmake: MinGW build fix using bundled sqlite3
+
+---
+ CMakeLists.txt                   | 4 ++--
+ sdk/databaselayer/CMakeLists.txt | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 442a6e610..3b37f9ffe 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -625,7 +625,7 @@ if ( APPLE )
+     add_definitions( -mmacosx-version-min=10.8 )
+ endif()
+ 
+-if(APPLE)
++if( NOT SQLITE3_FOUND )
+     # On Linux, we use the distro's libsqlite3
+     add_subdirectory(sqlite3)
+ endif()
+@@ -719,7 +719,7 @@ endif()
+ ##
+ ## Setup the proper dependencies
+ ##
+-if(APPLE)
++if(NOT SQLITE3_FOUND)
+     if ( USE_PCH )
+         add_dependencies(sqlite3lib ${CL_PCH_TARGET})
+     endif ( USE_PCH )
+diff --git a/sdk/databaselayer/CMakeLists.txt b/sdk/databaselayer/CMakeLists.txt
+index c9da65acf..cba492e29 100644
+--- a/sdk/databaselayer/CMakeLists.txt
++++ b/sdk/databaselayer/CMakeLists.txt
+@@ -32,7 +32,7 @@ if ( APPLE )
+     add_definitions(-fPIC)
+ endif()
+ 
+-if(APPLE)
++if( NOT SQLITE3_FOUND )
+     FILE(GLOB SRCS "src/dblayer/Sqlite*.cpp" "src/dblayer/Database*.cpp" "src/dblayer/Prepared*.cpp" "src/sqlite3/*.c")
+ else()
+     FILE(GLOB SRCS "src/dblayer/Sqlite*.cpp" "src/dblayer/Database*.cpp" "src/dblayer/Prepared*.cpp")
+-- 

@@ -1,0 +1,42 @@
+From 8dcccf452fcda657038569ad97a358634cb48af3 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 2 Aug 2021 10:47:11 -0400
+Subject: Add sdk/wxconfig/CMakeLists.txt and
+
+add_subdirectory(sdk/wxconfig) in root CMakeLists.txt.
+---
+ CMakeLists.txt              | 3 +++
+ sdk/wxconfig/CMakeLists.txt | 9 +++++++++
+ 2 files changed, 12 insertions(+)
+ create mode 100644 sdk/wxconfig/CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 15ed2fb30..ef012f19f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -722,6 +722,9 @@ if(NOT SDK_ONLY)
+     add_subdirectory(sdk/codelite_indexer)
+     add_subdirectory(sdk/codelite_cppcheck)
+     add_subdirectory(codelite_echo)
++    if(MINGW)
++        add_subdirectory(sdk/wxconfig)
++    endif()
+     if(DEBUG_BUILD)
+         add_subdirectory(CodeCompletionsTests)
+         add_subdirectory(CxxParserTests)
+diff --git a/sdk/wxconfig/CMakeLists.txt b/sdk/wxconfig/CMakeLists.txt
+new file mode 100644
+index 000000000..3443bbeba
+--- /dev/null
++++ b/sdk/wxconfig/CMakeLists.txt
+@@ -0,0 +1,9 @@
++# define minimum cmake version
++cmake_minimum_required(VERSION 3.0)
++
++project(wx-config)
++
++# Define the output
++add_executable(wx-config-win "wx-config-win.cpp")
++
++CL_INSTALL_EXECUTABLE(wx-config-win)
+-- 
