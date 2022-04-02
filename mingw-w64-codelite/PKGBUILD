@@ -7,7 +7,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=15.0.6
+pkgver=15.0.11
 pkgrel=1
 pkgdesc="Open-source, cross platform IDE for the C/C++ programming languages (mingw-w64)"
 arch=('any')
@@ -38,7 +38,7 @@ source=("${_realname}-${pkgver}.tar.gz::https://github.com/eranif/codelite/archi
         024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch
         025-Add-sdk-wxconfig-CMakeLists.txt-and.patch
         026-Add-TestDir-CMakeLists.txt-and.patch)
-sha256sums=('28430c37d163219b1001b6e539e520e4f3e750ea5b8ee2457d92d0961fee15bb'
+sha256sums=('d515327c8ab1c06a694ef2f40d07be7cc86707580e94d96c95c1a6b5fc7a27a9'
             'f3f3e48c79301a928775a5d5a7d403e362fbc324bd9c571a3052b96118c379d8'
             '5ec52ce83119934443788206f703bcc8e8ab99ddc9d9023951c686d50d14c0fe'
             '99f89bf0c038467e297bb5cfd5538ec7209ce1ec299757a4876c917f6e6224ab'
@@ -48,12 +48,12 @@ sha256sums=('28430c37d163219b1001b6e539e520e4f3e750ea5b8ee2457d92d0961fee15bb'
 
 prepare() {
   cd "${srcdir}/${_realname}-${pkgver}"
-  patch -p1 -i ${srcdir}/021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch
-  patch -p1 -i ${srcdir}/022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch
-  patch -p1 -i ${srcdir}/023-msys2-Fix-find-Sqlite3-system-library.patch
-  patch -p1 -i ${srcdir}/024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch
-  patch -p1 -i ${srcdir}/025-Add-sdk-wxconfig-CMakeLists.txt-and.patch
-  patch -p1 -i ${srcdir}/026-Add-TestDir-CMakeLists.txt-and.patch
+  patch -Np1 -i ${srcdir}/021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch || true
+  patch -Np1 -i ${srcdir}/022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch || true
+  patch -Np1 -i ${srcdir}/023-msys2-Fix-find-Sqlite3-system-library.patch || true
+  patch -Np1 -i ${srcdir}/024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch || true
+  patch -Np1 -i ${srcdir}/025-Add-sdk-wxconfig-CMakeLists.txt-and.patch || true
+  patch -Np1 -i ${srcdir}/026-Add-TestDir-CMakeLists.txt-and.patch || true
 }
 
 build() {
