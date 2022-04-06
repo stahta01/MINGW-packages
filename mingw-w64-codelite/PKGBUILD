@@ -48,12 +48,12 @@ sha256sums=('d515327c8ab1c06a694ef2f40d07be7cc86707580e94d96c95c1a6b5fc7a27a9'
 
 prepare() {
   cd "${srcdir}/${_realname}-${pkgver}"
-  patch -Np1 -i ${srcdir}/021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch || true
-  patch -Np1 -i ${srcdir}/022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch || true
-  patch -Np1 -i ${srcdir}/023-msys2-Fix-find-Sqlite3-system-library.patch || true
-  patch -Np1 -i ${srcdir}/024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch || true
-  patch -Np1 -i ${srcdir}/025-Add-sdk-wxconfig-CMakeLists.txt-and.patch || true
-  patch -Np1 -i ${srcdir}/026-Add-TestDir-CMakeLists.txt-and.patch || true
+#  patch -Np1 -i ${srcdir}/021-cmake-Rewrite-FindSqlite3.cmake-and-logic-using-it.patch
+#  patch -Np1 -i ${srcdir}/022-cmake-MinGW-build-fix-using-bundled-sqlite3.patch
+#  patch -Np1 -i ${srcdir}/023-msys2-Fix-find-Sqlite3-system-library.patch
+#  patch -Np1 -i ${srcdir}/024-mingw32-Disable-MSWSetWindowDarkTheme-if-not-WIN64.patch
+#  patch -Np1 -i ${srcdir}/025-Add-sdk-wxconfig-CMakeLists.txt-and.patch
+#  patch -Np1 -i ${srcdir}/026-Add-TestDir-CMakeLists.txt-and.patch
 }
 
 build() {
