@@ -1,0 +1,26 @@
+From cdfe8b4c29bf487f7085f537ead310ec5894025d Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 25 May 2022 12:55:56 -0400
+Subject: codeblocks: AddSupportedGlobalGenerator("MSYS Makefiles");
+
+---
+ Source/cmExtraCodeBlocksGenerator.cxx | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Source/cmExtraCodeBlocksGenerator.cxx b/Source/cmExtraCodeBlocksGenerator.cxx
+index 988c5c3d55..f8b0001495 100644
+--- a/Source/cmExtraCodeBlocksGenerator.cxx
++++ b/Source/cmExtraCodeBlocksGenerator.cxx
+@@ -52,8 +52,7 @@ cmExtraCodeBlocksGenerator::GetFactory()
+     factory.AddSupportedGlobalGenerator("MinGW Makefiles");
+     factory.AddSupportedGlobalGenerator("NMake Makefiles");
+     factory.AddSupportedGlobalGenerator("NMake Makefiles JOM");
+-// disable until somebody actually tests it:
+-// this->AddSupportedGlobalGenerator("MSYS Makefiles");
++    factory.AddSupportedGlobalGenerator("MSYS Makefiles");
+ #endif
+     factory.AddSupportedGlobalGenerator("Ninja");
+     factory.AddSupportedGlobalGenerator("Unix Makefiles");
+-- 
+2.36.1.windows.1
+
