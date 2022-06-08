@@ -1,0 +1,55 @@
+# Maintainer: Tim Stahlhut
+
+_filename=PcbDraw
+_realname=pcbdraw
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=0.6.1
+pkgrel=1
+pkgdesc='Convert your KiCAD board into a nice looking 2D drawing suitable for pinout diagrams (mingw-w64)'
+arch=(any)
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
+url='https://github.com/yaqwsx/PcbDraw'
+license=('MIT')
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-python"
+  "${MINGW_PACKAGE_PREFIX}-kicad"
+  "${MINGW_PACKAGE_PREFIX}-python-numpy"
+  "${MINGW_PACKAGE_PREFIX}-python-lxml"
+  "${MINGW_PACKAGE_PREFIX}-python-mistune"
+#  'python-pybars3'
+#  'python-wand' # Run-Time error: ModuleNotFoundError: No module named 'wand'
+  "${MINGW_PACKAGE_PREFIX}-python-yaml"
+)
+makedepends=("${MINGW_PACKAGE_PREFIX}-python-setuptools"
+             "${MINGW_PACKAGE_PREFIX}-python-wheel")
+source=("$_realname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
+# source=("https://files.pythonhosted.org/packages/source/${_name::1}/${_name}/${_name}-${pkgver}.tar.gz")
+sha512sums=('bf149f030eb2b66bc7d4fcd3c93b8775dcd5ed49975a8f648c445f72496ba970704bcbe588975efe0607cbff6ebce41382aac0ac484f87eff853c4b5cfec9bcd')
+
+prepare() {
+  cd $_filename-$pkgver
+  sed -e '/"versioneer"/d' -i setup.py
+
+  cd "${srcdir}"
+  rm -rf python-build-${MSYSTEM} | true
+  cp -r "${_filename}-${pkgver}" "python-build-${MSYSTEM}"
+}
+
+build() {
+  cd python-build-${MSYSTEM}
+
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+  ${MINGW_PREFIX}/bin/python setup.py build
+}
+
+package() {
+  cd "${srcdir}"/python-build-${MSYSTEM}
+
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+  ${MINGW_PREFIX}/bin/python setup.py install --prefix=${MINGW_PREFIX} --root="${pkgdir}" --optimize=1 --skip-build
+
+  install -Dm 644 LICENSE ${pkgdir}${MINGW_PREFIX}/share/licenses/$_realname/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:
