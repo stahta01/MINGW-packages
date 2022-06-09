@@ -18,7 +18,7 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-python-lxml"
   "${MINGW_PACKAGE_PREFIX}-python-mistune"
 #  'python-pybars3'
-#  'python-wand' # Run-Time error: ModuleNotFoundError: No module named 'wand'
+  "${MINGW_PACKAGE_PREFIX}-python-wand" # Run-Time error: ModuleNotFoundError: No module named 'wand'
   "${MINGW_PACKAGE_PREFIX}-python-yaml"
 )
 makedepends=("${MINGW_PACKAGE_PREFIX}-python-setuptools"
