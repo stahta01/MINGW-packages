@@ -8,14 +8,14 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-footprints"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-meta")
 pkgver=5.1.12
-pkgrel=4
+pkgrel=5
 pkgdesc="Support libraries for KiCad (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
 url='https://www.kicad.org/'
 license=("spdx:AGPL-3.0-or-later")
 groups=("${MINGW_PACKAGE_PREFIX}-eda")
-depends=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+optdepends=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-ninja")
 options=('!strip')
