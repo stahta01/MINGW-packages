@@ -2,11 +2,11 @@
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=wxPython
-_wx_basever=3.1
+_wx_basever=3.2
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.1.2a1.dev5434+7d45ee6a
-pkgrel=2
+pkgver=4.2.1a1.dev5480+e220dab2
+pkgrel=1
 pkgdesc="A wxWidgets GUI toolkit for Python (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
@@ -17,23 +17,23 @@ depends=("${MINGW_PACKAGE_PREFIX}-python"
            "${MINGW_PACKAGE_PREFIX}-python-numpy" )
          "${MINGW_PACKAGE_PREFIX}-python-pillow"
          "${MINGW_PACKAGE_PREFIX}-python-six"
-         "${MINGW_PACKAGE_PREFIX}-wxmsw${_wx_basever}")
+         "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs")
 makedepends=("${MINGW_PACKAGE_PREFIX}-doxygen"
+             "${MINGW_PACKAGE_PREFIX}-python-attrdict3"
              "${MINGW_PACKAGE_PREFIX}-python-requests"
-             "${MINGW_PACKAGE_PREFIX}-sip4"
+             "${MINGW_PACKAGE_PREFIX}-sip"
              "${MINGW_PACKAGE_PREFIX}-waf"
              "${MINGW_PACKAGE_PREFIX}-cc"
+             "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw"
              # for waf
-             "python" "python-setuptools")
+             "${MINGW_PACKAGE_PREFIX}-python-setuptools")
 options=('strip' 'staticlibs' 'buildflags')
 source=(#"https://files.pythonhosted.org/packages/b0/4d/80d65c37ee60a479d338d27a2895fb15bbba27a3e6bb5b6d72bb28246e99/${_realname}-${pkgver}.tar.gz"
         "https://wxpython.org/Phoenix/snapshot-builds/${_realname}-${pkgver}.tar.gz"
-        '201-Remove-obsolete-entries-from-Doxyfile.patch'
-        '301-Revert-some-of-python-sip-changes.patch')
+        '201-Remove-obsolete-entries-from-Doxyfile.patch')
 noextract=("${_realname}-${pkgver}.tar.gz")
-sha256sums=('9ab0b6a42d6bb6eacd45ba70f0e9940af56e1711596374c72b4a9110761e36db'
-            '97b5c9dd353f2c570b7a940585868c1127d10a96a3442cd96706359410494aa8'
-            '84f836f22f4bbe3f0644040188997fe82ad8db2d4ece6ae081f99d405aff7aa5')
+sha256sums=('bef5b981223c110836ba60d03df34d79d2d0fb122648ddab3fb88f1b404dc90d'
+            '97b5c9dd353f2c570b7a940585868c1127d10a96a3442cd96706359410494aa8')
 
 prepare() {
   plain "Extracting ${_realname}-${pkgver}.tar.gz due to symlink(s) without pre-existing target(s)"
@@ -43,13 +43,6 @@ prepare() {
 
   cd "${srcdir}/${_realname}-${pkgver}"
   rm -f etg/{_,}webkit.py sip/gen/{_,}webkit.sip
-
-  # wxPython possible bug fixes 1xx
-
-  # Revert some wxPython changes 3xx
-  patch -Np1 -i ${srcdir}/301-Revert-some-of-python-sip-changes.patch
-
-  # backport wxPython git changes 4xx
 
   # wxWidgets changes 2xx
   cd "${srcdir}/${_realname}-${pkgver}/ext/wxWidgets"
@@ -71,17 +64,25 @@ build() {
       --no_allmo --no_magic --regenerate_sysconfig \
         dox touch etg sip
 
+  ##
+  # CXX_NAME is just being used to save the value of CXX that is needed 
+  # later; because, the proper value of CXX_NAME is the CC value.
   local _jobs=${MAKEFLAGS:--j1}
   MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
   CC_NAME=${CC} CXX_NAME=${CXX} \
-  LDFLAGS="${LDFLAGS} $(python-config --ldflags)" \
+  CC=${MINGW_PREFIX}/bin/${CC}.exe \
+  CXX=${MINGW_PREFIX}/bin/${CXX}.exe \
+  LDFLAGS="${LDFLAGS} $(${MINGW_PREFIX}/bin/python-config --ldflags)" \
   PYTHON_CONFIG="${MINGW_PREFIX}/bin/python-config" \
-    "${MINGW_PREFIX}/bin/waf" \
+    waf \
       --prefix="${MINGW_PREFIX}" --python="${MINGW_PREFIX}/bin/python.exe" \
-      --check-cxx-compiler=${CXX} --check-c-compiler=${CC} --color=yes --jobs=${_jobs#-j} \
-      --wx_config=wx-config-${_wx_basever} \
+      --no_msvc --check-c-compiler=${CC_NAME} --check-cxx-compiler=${CXX_NAME} \
+      --color=yes --jobs=${_jobs#-j} \
+      --wx_config="sh.exe ${MINGW_PREFIX}/bin/wx-config-${_wx_basever}" \
       --no_magic --nopyc --nopyo --nopycache \
-        configure build
+        configure
+
+  waf build
 }
 
 package() {
@@ -90,7 +91,7 @@ package() {
     "${MINGW_PREFIX}/bin/python" setup.py install \
       --prefix="${MINGW_PREFIX}" --root="${pkgdir}" --skip-build
 
-  MSYS2_ARG_CONV_EXCL="-p" python -m compileall \
+  MSYS2_ARG_CONV_EXCL="-p" ${MINGW_PREFIX}/bin/python -m compileall \
     -o 0 -o 1 -q -s"${pkgdir}" -p"/" "${pkgdir}${MINGW_PREFIX}/lib/python"*
 
   # remove shebang line
