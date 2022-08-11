@@ -80,6 +80,7 @@ build() {
       --color=yes --jobs=${_jobs#-j} \
       --wx_config="sh.exe ${MINGW_PREFIX}/bin/wx-config-${_wx_basever}" \
       --no_magic --nopyc --nopyo --nopycache \
+      -vvv \
         configure
 
   waf build
