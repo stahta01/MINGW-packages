@@ -24,7 +24,7 @@ pkgver=12.1.0
 #_majorver=${pkgver:0:1}
 #_sourcedir=${_realname}-${_majorver}-${_snapshot}
 _sourcedir=${_realname}-${pkgver}
-pkgrel=3
+pkgrel=4
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64')
@@ -191,7 +191,7 @@ build() {
         "--disable-sjlj-exceptions"
         "--with-dwarf2"
       )
-      LDFLAGS+=" -Wl,--large-address-aware"
+      LDFLAGS+=" -Wl,--stack,16777216 -Wl,--large-address-aware"
       local _arch=i686
     ;;
 
