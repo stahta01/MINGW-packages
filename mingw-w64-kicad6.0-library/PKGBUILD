@@ -5,7 +5,7 @@ _kicad_basever=6.0
 pkgbase=mingw-w64-${_realname}${_kicad_basever}-library
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}${_kicad_basever}-footprints"
          "${MINGW_PACKAGE_PREFIX}-${_realname}${_kicad_basever}-symbols"
-         "${MINGW_PACKAGE_PREFIX}-${_realname}${_kicad_basever}-packages3D"
+#         "${MINGW_PACKAGE_PREFIX}-${_realname}${_kicad_basever}-packages3D"
          "${MINGW_PACKAGE_PREFIX}-${_realname}${_kicad_basever}-templates")
 pkgver=${_kicad_basever}.7
 pkgrel=1
@@ -21,11 +21,11 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
 options=('!strip')
 source=("${_realname}-footprints-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${pkgver}/kicad-footprints-${pkgver}.tar.gz"
         "${_realname}-symbols-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/${pkgver}/kicad-symbols-${pkgver}.tar.gz"
-        "${_realname}-packages3D-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.gz"
+#        "${_realname}-packages3D-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.gz"
         "${_realname}-templates-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${pkgver}/kicad-templates-${pkgver}.tar.gz")
 sha256sums=('3dabfa018597c181e9ca1add4c78d50d5bf38500c1c665510bb37e0ea7b5ba7e'
             '03a888a516e3899cbc7dada1127e9c0309c0f7a8d995aa0dd9c7aa7f6f3a9d7f'
-            'e8d008f743330c4b46e8d2ad518ad554653a2c5b3866f59a865ec4334e68b3aa'
+#            'e8d008f743330c4b46e8d2ad518ad554653a2c5b3866f59a865ec4334e68b3aa'
             '1da05f4067b16c4b8be8e172cc73ddc5ce05977f384dd7e531f23c7fdc69da8a')
 build() {
   declare -a extra_config
@@ -35,8 +35,8 @@ build() {
     extra_config+=("-DCMAKE_BUILD_TYPE=Debug")
   fi
 
-  for _s in "footprints" "symbols" "templates" "packages3D"; do
-#  for _s in "footprints" "symbols" "templates"; do
+#  for _s in "footprints" "symbols" "templates" "packages3D"; do
+  for _s in "footprints" "symbols" "templates"; do
     msg2 "Build kicad-${_s}"
     [[ -d "${srcdir}"/build-${_s}-${MSYSTEM} ]] && rm -rf "${srcdir}"/build-${_s}-${MSYSTEM}
     mkdir -p "${srcdir}/build-${_s}-${MSYSTEM}" && cd "${srcdir}/build-${_s}-${MSYSTEM}"
