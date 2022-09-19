@@ -1,0 +1,46 @@
+# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Tim S. <stahta01@gmail.com>
+
+_kicad_basever=6.0
+_realname=kicad${_kicad_basever}-doc
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-ca"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-de"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-en"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-es"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-fr"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-id"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-it"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-ja"
+         # "${MINGW_PACKAGE_PREFIX}-${_realname}-nl"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-pl"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-ru"
+         "${MINGW_PACKAGE_PREFIX}-${_realname}-zh")
+pkgver=${_kicad_basever}.7
+pkgrel=1
+pkgdesc="Documentation for KiCad (mingw-w64)"
+arch=(any)
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
+url="https://www.kicad.org/"
+license=("GPL3" "custom")
+makedepends=()
+optdepends=("${MINGW_PACKAGE_PREFIX}-kicad${_kicad_basever}-meta"
+            "${MINGW_PACKAGE_PREFIX}-kicad${_kicad_basever}")
+options=('!strip')
+
+source=("https://kicad-downloads.s3.cern.ch/docs/kicad-doc-${pkgver}.tar.gz")
+sha256sums=('470b741e55f80c828d6fe607b503d9e9d27081bf871ec52092d0ba7e1a0c9b2c')
+
+build_lang() {
+  cd "${srcdir}/kicad-doc-${pkgver}/share/doc/kicad/help"
+  mkdir -p "${pkgdir}${MINGW_PREFIX}/share/doc/kicad/help/"
+  cp -R ${langid} "${pkgdir}${MINGW_PREFIX}/share/doc/kicad/help/"
+}
+
+for _n in ${pkgname[@]}; do
+  eval "package_${_n}() {
+    provides=(${MINGW_PACKAGE_PREFIX}-kicad-doc-${_n#${MINGW_PACKAGE_PREFIX}-${_realname}-})
+    conflicts=(${MINGW_PACKAGE_PREFIX}-kicad-doc-${_n#${MINGW_PACKAGE_PREFIX}-${_realname}-})
+    langid="${_n#${MINGW_PACKAGE_PREFIX}-${_realname}-}" build_lang
+  }"
+done
