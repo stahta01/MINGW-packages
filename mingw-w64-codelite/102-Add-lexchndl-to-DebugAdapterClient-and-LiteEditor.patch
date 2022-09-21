@@ -1,0 +1,50 @@
+From fb54659f0e7c0c1d4039be2892e56dd2124aba6f Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 20 Sep 2022 18:10:57 -0400
+Subject: Add "-lexchndl" to DebugAdapterClient and LiteEditor
+
+---
+ DebugAdapterClient/CMakeLists.txt | 9 ++++++++-
+ LiteEditor/CMakeLists.txt         | 1 +
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/DebugAdapterClient/CMakeLists.txt b/DebugAdapterClient/CMakeLists.txt
+index 2cd9fa601..4783c342b 100644
+--- a/DebugAdapterClient/CMakeLists.txt
++++ b/DebugAdapterClient/CMakeLists.txt
+@@ -25,6 +25,12 @@ add_definitions(-DWXUSINGDLL_DAP)
+ ## By default, use the sources under the current folder
+ FILE(GLOB PLUGIN_SRCS "*.cpp")
+ 
++set( ADDITIONAL_LIBRARIES "" )
++
++if(MINGW)
++    set(ADDITIONAL_LIBRARIES "-lexchndl")
++endif()
++
+ # Define the output - shared library
+ add_library(${PLUGIN_NAME} SHARED ${PLUGIN_SRCS})
+ 
+@@ -36,7 +42,8 @@ target_link_libraries(${PLUGIN_NAME}
+                       ${LIBLLDB}
+                       libcodelite
+                       plugin
+-                      dapcxx)
++                      dapcxx
++                      ${ADDITIONAL_LIBRARIES})
+ # Installation destination
+ CL_INSTALL_PLUGIN(${PLUGIN_NAME})
+ 
+diff --git a/LiteEditor/CMakeLists.txt b/LiteEditor/CMakeLists.txt
+index 84769aea5..4ef7f1022 100644
+--- a/LiteEditor/CMakeLists.txt
++++ b/LiteEditor/CMakeLists.txt
+@@ -68,6 +68,7 @@ if (UNIX)
+     endif ( )
+ else (UNIX)
+     ## Windows??
++    set(ADDITIONAL_LIBRARIES "-lexchndl")
+ endif (UNIX)
+ 
+ if(GTK2_FOUND)
+-- 

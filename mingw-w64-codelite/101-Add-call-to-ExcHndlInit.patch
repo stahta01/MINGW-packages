@@ -1,0 +1,31 @@
+From 1a713e32b2ab6aaba1eeacc1abf0adab9a76100e Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 20 Sep 2022 14:14:20 -0400
+Subject: Add call to ExcHndlInit()
+
+---
+ LiteEditor/app.cpp       |  2 ++
+ wxcrafter/CMakeLists.txt | 10 +++++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/LiteEditor/app.cpp b/LiteEditor/app.cpp
+index a2cb470ee..77404000b 100644
+--- a/LiteEditor/app.cpp
++++ b/LiteEditor/app.cpp
+@@ -75,6 +75,7 @@
+ #endif
+ 
+ #ifdef __WXMSW__
++#include <exchndl.h>         //crash/exception handler
+ #include <wx/msw/registry.h> //registry keys
+ void EnableDebugPriv()
+ {
+@@ -310,6 +311,7 @@ bool CodeLiteApp::OnInit()
+ #endif
+ 
+ #ifdef __WXMSW__
++    ExcHndlInit();
+     typedef BOOL WINAPI (*SetProcessDPIAwareFunc)();
+     HINSTANCE user32Dll = LoadLibrary(L"User32.dll");
+     if(user32Dll) {
+-- 

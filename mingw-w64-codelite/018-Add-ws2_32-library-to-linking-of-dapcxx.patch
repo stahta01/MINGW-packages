@@ -1,0 +1,27 @@
+From 9dae96a681b2ef431fc6df38bc32332550b0b96a Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 20 Sep 2022 05:31:51 -0400
+Subject: Add ws2_32 library to linking of dapcxx
+
+---
+ dap/CMakeLists.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/dap/CMakeLists.txt b/dap/CMakeLists.txt
+index e051e67..2804a85 100644
+--- a/dap/CMakeLists.txt
++++ b/dap/CMakeLists.txt
+@@ -7,5 +7,11 @@ FILE(GLOB SRCS "*.cpp")
+ find_package(wxWidgets COMPONENTS adv aui base core xml xrc net stc richtext REQUIRED)
+ include( "${wxWidgets_USE_FILE}" )
+ 
++set( ADDITIONAL_LIBRARIES "" )
++
++if(MINGW)
++set(ADDITIONAL_LIBRARIES "-lws2_32")
++endif()
++
+ add_library(dapcxx SHARED ${SRCS})
+-target_link_libraries(dapcxx ${wxWidgets_LIBRARIES})
++target_link_libraries(dapcxx ${wxWidgets_LIBRARIES} ${ADDITIONAL_LIBRARIES})
+-- 
