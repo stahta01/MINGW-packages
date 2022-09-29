@@ -13,14 +13,14 @@ pkgname=(
     "${_mingw_suff}-${_realname}-objc"
     )
 pkgver=4.8.2
-pkgrel=8
+pkgrel=9
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
 url="http://gcc.gnu.org"
 license=('GPL' 'LGPL' 'FDL' 'custom')
 groups=("${_mingw_suff}-toolchain" "${_mingw_suff}")
-depends=("${_mingw_suff}-zlib" "${_mingw_suff}-mpc" "${_mingw_suff}-cloog" "${_mingw_suff}-crt" "${_mingw_suff}-binutils" "${_mingw_suff}-winpthreads" "${_mingw_suff}-headers")
-makedepends=("${_mingw_suff}-${_realname}-ada=${pkgver}" "${_mingw_suff}-${_realname}" 'lndir')
+depends=("${_mingw_suff}-zlib" "${_mingw_suff}-mpc" "${_mingw_suff}-crt" "${_mingw_suff}-binutils" "${_mingw_suff}-winpthreads" "${_mingw_suff}-headers")
+makedepends=("${_mingw_suff}-${_realname}-ada" "${_mingw_suff}-${_realname}" 'lndir')
 #checkdepends=('dejagnu')
 optdepends=()
 replaces=()
@@ -42,24 +42,26 @@ source=("ftp://gcc.gnu.org/pub/gcc/releases/${_realname}-${pkgver}/${_realname}-
     'build-more-gnattools.mingw.patch'
     'libgomp-no-static.patch'
     'gcc-4.8.2-PR-middle-end-60484-fix-dump-path-problems.patch'
-    handle-use-mingw-ansi-stdio.patch)
-md5sums=('a3d7d63b9cb6b6ea049469a0c4a43c9d'
-         '40cb437805e2f7a006aa0d0c3098ab0f'
-         '6eb6e080dbf7bc6825f53a0aaa6c4ef9'
-         'd28f5653282c67bcfd1a8f81aebef72d'
-         '928e151b33981e68d0e67a9bd387b37e'
-         'f6b5fb08ff06a7d60ee3280e14240bb2'
-         '71cdb550528efcf2a5c9112464bfbabc'
-         '4ea64bea762b96cbe69986bd9ddc1532'
-         '70657e6da8ae574fa3887d71b5e08683'
-         '9e07f25b8813191eebd7fda684b1e2dd'
-         '60fdccbd072e2b2e724ff879d31ec57e'
-         'f539e602715250bbdb8d2a6a25f1ccbe'
-         '9036f99b9ef9a6897a808266bbd57a12'
-         'fde1098e5c71963ec2ed4c5b2c4217bd'
-         '0a78aaac959e212acb24bb38271804cb'
-         '5370ab0fee3bfdd3f7886a2139d78b8c'
-         '03a9f701d86a8eeb01fb3435ae2c0e6b')
+    handle-use-mingw-ansi-stdio.patch
+    '704-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch')
+sha256sums=('09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8'
+            '9278e745190bac0b3f6ef74972aecd4e2891d4930f7b6fa8840c3d4f7fbf4f98'
+            '301cfbe339043ca14205140acbec1d0f55178f01365ff309e4ddb90a3c934031'
+            '9e0401c3e69317a45269fb689e4e89ee8f46997c2c52b11812a11c9faf142ede'
+            '52ddd5b2d5f337efa7475de211eccebd70e343c902107343b22d66951fb799d3'
+            '21191b4fd57ce5f230fcc97b4d9ae31bdc387d7c7c8e39436aa7e4268d278d3d'
+            '5e0fc1437ce0b357e78d440692e3a30a7905a5f360a67928a95b14ec8d45365b'
+            '800e81e4e6acb07f1b69cccc07a8dae8cdbf7c084ac00c8869e9b4cb205c655c'
+            'd341bfb0e655f7daf0057aab899c3ac9e1363dbb6f0ca2cbffa6144e0ca2ad17'
+            '0953d65d4fb3d681c76b6d6353e3cc424751a417872435f724d463001da66d43'
+            'a7c5daced21086a01b3af9af4c46ee738ccfca6e67b3413771cb7ab81aa2a83f'
+            'f05fc823279d764e0e19c7721e34e2c969f1df4492398c9de1764a4ffdba809e'
+            '75c5dcc2219bfb74aba7bfb5df70b17ebde5846b02ffaeb8fdd77a218c4536ab'
+            'd16e76e0aa9e5a1c239424edc3a6da52785e82849b6e00850f8e2526e7f496d9'
+            '1422dccee79ead90dfc729e325074675758e642e38d4af6d0fc870b364c61a8e'
+            'e3247fcc84e2b08a3618d73f64f39dd6eef1daf9743819a844ebb8c4d38ebce6'
+            '3b9779b05198b4c814709f211623c0b1ebf8937f32eba29826cf15bfc29df9a3'
+            'c5782bca021e1b96ada60001e98052648bc07207d0a6e5066bc0b69f1efb692e')
 
 _threads="posix"
 
@@ -84,7 +86,7 @@ prepare() {
     cp configure configure.src
   }
   sed -i 's/${prefix}\/mingw\//${prefix}\//g' configure
-  
+
   # change hardcoded /mingw prefix to the real prefix
   [[ -f gcc/config/i386/mingw32.h.src ]] && {
     rm -f gcc/config/i386/mingw32.h
@@ -94,7 +96,7 @@ prepare() {
   }
   local MINGW_NATIVE_PREFIX=$(cygpath -am ${MINGW_PREFIX}/${MINGW_CHOST})
   sed -i "s/\\/mingw\\//${MINGW_NATIVE_PREFIX//\//\\/}\\//g" gcc/config/i386/mingw32.h
-  
+
   # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=57653
   patch -p0 -i ${srcdir}/gcc-4.8-filename-output.patch
 
@@ -102,7 +104,7 @@ prepare() {
   patch -p1 -i ${srcdir}/gcc-4.8-lambda-ICE.patch
 
   #patch -p1 -i ${srcdir}/gcc-4.8-iconv.patch
-  
+
   patch -p0 -i ${srcdir}/4.8-libgcc-references.patch
   patch -p1 -i ${srcdir}/gcc-4.8-libstdc++export.patch
   patch -p1 -i ${srcdir}/gcc-4.7-stdthreads.patch
@@ -124,10 +126,10 @@ prepare() {
 
   # Kai's libgomp fix.
   patch -p1 -i ${srcdir}/ktietz-libgomp.patch
-  
+
   # Enable building libatomic
   patch -p2 -i ${srcdir}/4.8-libatomic-cygwin.patch
-  
+
   # Build aextra tools for Ada
   patch -p1 -i ${srcdir}/build-more-gnattools.mingw.patch
 
@@ -137,6 +139,8 @@ prepare() {
 
   patch -p1 -i ${srcdir}/handle-use-mingw-ansi-stdio.patch
 
+  patch -p1 -i ${srcdir}/704-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch
+
   if check_option "debug" "y"; then
     # Expose some libgomp internals for debugging.
     patch -p1 -i ${srcdir}/libgomp-no-static.patch
@@ -144,8 +148,8 @@ prepare() {
 }
 
 build() {
-  [[ -d ${srcdir}/build-${MINGW_CHOST} ]] && rm -rf ${srcdir}/build-${MINGW_CHOST}
-  mkdir -p ${srcdir}/build-${MINGW_CHOST} && cd ${srcdir}/build-${MINGW_CHOST}
+  [[ -d ${srcdir}/build-${MSYSTEM} ]] && rm -rf ${srcdir}/build-${MSYSTEM}
+  mkdir -p ${srcdir}/build-${MSYSTEM} && cd ${srcdir}/build-${MSYSTEM}
 
   case "${CARCH}" in
     i686)
@@ -153,7 +157,7 @@ build() {
       LDFLAGS+=" -Wl,--large-address-aware"
       local _arch=i686
     ;;
-    
+
     x86_64)
       local _arch=x86-64
       local _conf=""
@@ -176,12 +180,11 @@ build() {
     --enable-shared --enable-static \
     --enable-libatomic \
     --enable-threads=${_threads} \
-    --enable-graphite \
+    --disable-graphite \
     --enable-fully-dynamic-string \
     --enable-libstdcxx-time=yes \
     --disable-libstdcxx-pch \
     --disable-libstdcxx-debug \
-    --enable-cloog-backend=isl \
     --enable-version-specific-runtime-libs \
     --disable-cloog-version-check --disable-isl-version-check \
     --enable-lto \
@@ -195,7 +198,7 @@ build() {
     --disable-symvers \
     --with-libiconv \
     --with-system-zlib \
-    --with-{gmp,mpfr,mpc,isl,cloog}=${MINGW_PREFIX} \
+    --with-{gmp,mpfr,mpc}=${MINGW_PREFIX} \
     --with-pkgversion="Rev${pkgrel}, Built by MSYS2 project" \
     --with-bugurl="http://sourceforge.net/projects/msys2" \
     --with-gnu-as --with-gnu-ld \
@@ -225,12 +228,12 @@ package_mingw-w64-gcc-libs() {
 
 package_mingw-w64-gcc() {
   pkgdesc="GNU Compiler Collection (C,C++,OpenMP) for MinGW-w64"
-  depends=("${_mingw_suff}-crt" "${_mingw_suff}-binutils" "${_mingw_suff}-winpthreads" "${_mingw_suff}-headers" "${_mingw_suff}-zlib" "${_mingw_suff}-mpc" "${_mingw_suff}-cloog" "${_mingw_suff}-${_realname}-libs=${pkgver}") 
+  depends=("${_mingw_suff}-crt" "${_mingw_suff}-binutils" "${_mingw_suff}-winpthreads" "${_mingw_suff}-headers" "${_mingw_suff}-zlib" "${_mingw_suff}-mpc" "${_mingw_suff}-${_realname}-libs=${pkgver}")
   provides=("${_mingw_suff}-${_realname}-base")
   conflicts=("${_mingw_suff}-${_realname}-base")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,include,lib,share}
-  
+
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/cpp.exe ${pkgdir}${MINGW_PREFIX}/bin/
   cp bin/gcc.exe ${pkgdir}${MINGW_PREFIX}/bin/
@@ -247,7 +250,7 @@ package_mingw-w64-gcc() {
   cp bin/${MINGW_CHOST}-gcc-ar.exe ${pkgdir}${MINGW_PREFIX}/bin/
   cp bin/${MINGW_CHOST}-gcc-nm.exe ${pkgdir}${MINGW_PREFIX}/bin/
   cp bin/${MINGW_CHOST}-gcc-ranlib.exe ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   #cp bin/{libgcc*,libgomp*,libquadmath*,libssp*,libstdc*}.dll ${pkgdir}${MINGW_PREFIX}/bin/
   mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/include/*.h ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
@@ -265,17 +268,17 @@ package_mingw-w64-gcc() {
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/libquadmath.* ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/libssp* ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/lto*.exe ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
-    
+
   #mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/lib
   cp ${srcdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/lib/libgcc_s.a ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   #cp lib/gcc/${MINGW_CHOST}/lib/libgcc_s.a ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/lib/
-  
+
   #cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/include/c++ ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
   cp -r include/c++ ${pkgdir}${MINGW_PREFIX}/include/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/cc1plus.exe ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/libstdc++* ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/libsupc++* ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/share/{doc,info,locale,man}
   #cp -r share/doc/gcc-${pkgver} ${pkgdir}${MINGW_PREFIX}/share/doc/
   cp share/info/cpp.info* ${pkgdir}${MINGW_PREFIX}/share/info/
@@ -285,7 +288,7 @@ package_mingw-w64-gcc() {
   cp share/info/gccint.info* ${pkgdir}${MINGW_PREFIX}/share/info/
   cp share/info/libgomp.info* ${pkgdir}${MINGW_PREFIX}/share/info/
   cp share/info/libquadmath.info* ${pkgdir}${MINGW_PREFIX}/share/info/
-  
+
   #cp share/locale/* ${pkgdir}${MINGW_PREFIX}/share/locale/
   mkdir -p ${pkgdir}${MINGW_PREFIX}/share/gcc-${pkgver}/python
   cp -r share/gcc-${pkgver}/python/libstdcxx  ${pkgdir}${MINGW_PREFIX}/share/gcc-${pkgver}/python/
@@ -302,7 +305,7 @@ package_mingw-w64-gcc() {
 package_mingw-w64-gcc-libgfortran() {
   pkgdesc="GNU Compiler Collection (libgfortran) for MinGW-w64"
   depends=("${_mingw_suff}-${_realname}-libs=${pkgver}")
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/bin
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/libgfortran*.dll ${pkgdir}${MINGW_PREFIX}/bin/
@@ -311,15 +314,15 @@ package_mingw-w64-gcc-libgfortran() {
 package_mingw-w64-gcc-fortran() {
   pkgdesc="GNU Compiler Collection (Fortran) for MinGW-w64"
   depends=("${_mingw_suff}-${_realname}=${pkgver}" "${_mingw_suff}-${_realname}-libgfortran=${pkgver}")
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib,share}
-  
+
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/gfortran.exe ${pkgdir}${MINGW_PREFIX}/bin/
   cp bin/${MINGW_CHOST}-gfortran.exe ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   #cp bin/libgfortran*.dll ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/finclude  ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/f951.exe  ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
@@ -336,7 +339,7 @@ package_mingw-w64-gcc-ada() {
   depends=("${_mingw_suff}-${_realname}=${pkgver}")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib,share}
-  
+
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/gnat*.exe ${pkgdir}${MINGW_PREFIX}/bin/
   # cp bin/gnatbind.exe ${pkgdir}${MINGW_PREFIX}/bin/
@@ -351,14 +354,14 @@ package_mingw-w64-gcc-ada() {
   # cp bin/gnatname.exe ${pkgdir}${MINGW_PREFIX}/bin/
   # cp bin/gnatprep.exe ${pkgdir}${MINGW_PREFIX}/bin/
   # cp bin/gnatxref.exe ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   cp bin/{libgnarl*,libgnat*}.dll ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/adainclude ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/adalib ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/gnat1.exe ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/share/info
   cp share/info/gnat-style.info* ${pkgdir}${MINGW_PREFIX}/share/info/
   cp share/info/gnat_rm.info* ${pkgdir}${MINGW_PREFIX}/share/info/
@@ -368,12 +371,12 @@ package_mingw-w64-gcc-ada() {
 package_mingw-w64-gcc-objc() {
   pkgdesc="GNU Compiler Collection (ObjC,Obj-C++) for MinGW-w64"
   depends=("${_mingw_suff}-${_realname}=${pkgver}")
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/{bin,lib}
-  
+
   cd ${srcdir}${MINGW_PREFIX}
   cp bin/libobjc*.dll ${pkgdir}${MINGW_PREFIX}/bin/
-  
+
   mkdir -p ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include
   cp -r lib/gcc/${MINGW_CHOST}/${pkgver}/include/objc ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/include/
   cp lib/gcc/${MINGW_CHOST}/${pkgver}/cc1obj.exe ${pkgdir}${MINGW_PREFIX}/lib/gcc/${MINGW_CHOST}/${pkgver}/
