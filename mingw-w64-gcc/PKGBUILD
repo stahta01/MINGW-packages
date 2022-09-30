@@ -48,10 +48,10 @@ source=("ftp://gcc.gnu.org/pub/gcc/releases/${_realname}-${pkgver}/${_realname}-
     handle-use-mingw-ansi-stdio.patch
     '704-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch')
 sha256sums=('09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8'
-            '9278e745190bac0b3f6ef74972aecd4e2891d4930f7b6fa8840c3d4f7fbf4f98'
+            '5b6f9b1d90073dfc8e8ada22e7663c1aa64b532315efc080591b69e176d70ef8'
             '301cfbe339043ca14205140acbec1d0f55178f01365ff309e4ddb90a3c934031'
             '9e0401c3e69317a45269fb689e4e89ee8f46997c2c52b11812a11c9faf142ede'
-            '52ddd5b2d5f337efa7475de211eccebd70e343c902107343b22d66951fb799d3'
+            '761f70e33dbb96c5749673e3577a155ff5d5692788f6181fccf2bcbba58bc2fd'
             '21191b4fd57ce5f230fcc97b4d9ae31bdc387d7c7c8e39436aa7e4268d278d3d'
             '5e0fc1437ce0b357e78d440692e3a30a7905a5f360a67928a95b14ec8d45365b'
             '800e81e4e6acb07f1b69cccc07a8dae8cdbf7c084ac00c8869e9b4cb205c655c'
@@ -59,15 +59,12 @@ sha256sums=('09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8'
             '0953d65d4fb3d681c76b6d6353e3cc424751a417872435f724d463001da66d43'
             'a7c5daced21086a01b3af9af4c46ee738ccfca6e67b3413771cb7ab81aa2a83f'
             'f05fc823279d764e0e19c7721e34e2c969f1df4492398c9de1764a4ffdba809e'
-            '75c5dcc2219bfb74aba7bfb5df70b17ebde5846b02ffaeb8fdd77a218c4536ab'
+            '90e6e6f049e662f834d71f7beab31a21943681d43cc511b1fd26bb7697a98be3'
             'd16e76e0aa9e5a1c239424edc3a6da52785e82849b6e00850f8e2526e7f496d9'
             '1422dccee79ead90dfc729e325074675758e642e38d4af6d0fc870b364c61a8e'
             'e3247fcc84e2b08a3618d73f64f39dd6eef1daf9743819a844ebb8c4d38ebce6'
             '3b9779b05198b4c814709f211623c0b1ebf8937f32eba29826cf15bfc29df9a3'
             '35bbb8cbda294bea0c67d54e7a89ca5ece59db414cc7877e3b0244ea1ee6c2e3')
-
-_threads="posix"
-
 # =========================================== #
 # Helper macros to help make tasks easier     #
 apply_patch_with_msg() {
@@ -90,6 +87,8 @@ del_file_exists() {
   done
 }
 # =========================================== #
+_threads="posix"
+
 prepare() {
   cd ${srcdir}/${_realname}-${pkgver}
 
