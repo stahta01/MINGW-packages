@@ -2,6 +2,9 @@
 # Contributor: Alexey Borzenkov <snaury@gmail.com>
 # Contributor: Ray Donnelly <mingw.android@gmail.com>
 
+#_host_header_sub_folder=${MINGW_CHOST}
+_host_header_sub_folder=
+
 _realname=gcc
 _mingw_suff=mingw-w64-${CARCH}
 pkgname=(
@@ -94,7 +97,7 @@ prepare() {
   } || {
     cp gcc/config/i386/mingw32.h gcc/config/i386/mingw32.h.src
   }
-  local MINGW_NATIVE_PREFIX=$(cygpath -am ${MINGW_PREFIX}/${MINGW_CHOST})
+  local MINGW_NATIVE_PREFIX=$(cygpath -am ${MINGW_PREFIX}/${_host_header_sub_folder})
   sed -i "s/\\/mingw\\//${MINGW_NATIVE_PREFIX//\//\\/}\\//g" gcc/config/i386/mingw32.h
 
   # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=57653
@@ -170,7 +173,7 @@ build() {
     --build=${MINGW_CHOST} \
     --host=${MINGW_CHOST} \
     --target=${MINGW_CHOST} \
-    --with-native-system-header-dir=${MINGW_PREFIX}/${MINGW_CHOST}/include \
+    --with-native-system-header-dir=${MINGW_PREFIX}/${_host_header_sub_folder}/include \
     --libexecdir=${MINGW_PREFIX}/lib \
     --with-gxx-include-dir=${MINGW_PREFIX}/include/c++/${pkgver} \
     --disable-bootstrap \
