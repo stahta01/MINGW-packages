@@ -1,6 +1,7 @@
-# Maintainer: Carlos Antunes <cmantunes@gmail.com>
-# Maintainer: fauxpark <fauxpark@gmail.com>
-# Contributed by: nanodude
+# Maintainer:  Carlos Antunes <cmantunes@gmail.com>
+# Maintainer:  fauxpark <fauxpark@gmail.com>
+# Contributor: nanodude
+# Contributor: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=gcc
 _target=arm-none-eabi
@@ -9,11 +10,11 @@ _enable_ada=yes
 
 pkgbase=mingw-w64-${_target}-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}")
-pkgver=10.1.0
-pkgrel=2
+pkgver=12.2.0
+pkgrel=1
 pkgdesc='GNU Tools for ARM Embedded Processors - GCC (mingw-w64)'
 arch=('any')
-mingw_arch=('mingw32' 'mingw64')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64')
 license=('GPL')
 url='https://www.gnu.org/software/gcc/gcc.html'
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
@@ -35,13 +36,13 @@ makedepends=(
 )
 options=('!emptydirs' '!strip')
 source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/gcc-${pkgver}.tar.xz")
-sha256sums=('b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2')
+sha256sums=('e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff')
 
 prepare() {
     cd ${srcdir}/gcc-${pkgver}
 
-    mkdir gcc-build-${MINGW_CHOST}
-    mkdir gcc-build-nano-${MINGW_CHOST}
+    mkdir gcc-build-${MSYSTEM}
+    mkdir gcc-build-nano-${MSYSTEM}
 }
 
 _build_gcc() {
@@ -53,7 +54,7 @@ _build_gcc() {
         --host=${MINGW_CHOST} \
         --prefix=${MINGW_PREFIX} \
         --target=${_target} \
-        --with-native-system-header-dir=${MINGW_PREFIX}/${MINGW_CHOST}/include \
+        --with-native-system-header-dir=${MINGW_PREFIX}/include \
         --libexecdir=${MINGW_PREFIX}/lib \
         --enable-languages=${_languages} \
         --enable-plugins \
@@ -101,14 +102,14 @@ build() {
         _languages+=",ada"
     fi
 
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MINGW_CHOST}
+    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MSYSTEM}
 
     export CFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections'
     export CXXFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections'
     _build_gcc ${_languages}
 
     # Build libstdc++ without exceptions support (the 'nano' variant)
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MINGW_CHOST}
+    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MSYSTEM}
 
     export CFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections -fno-exceptions'
     export CXXFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections -fno-exceptions'
@@ -117,15 +118,15 @@ build() {
 }
 
 package() {
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MINGW_CHOST}
+    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MSYSTEM}
 
     make DESTDIR="${pkgdir}" install
 
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MINGW_CHOST}
+    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MSYSTEM}
 
-    mkdir ${pkgdir}/nano-install-${MINGW_CHOST}
+    mkdir ${pkgdir}/nano-install-${MSYSTEM}
 
-    make DESTDIR="${pkgdir}/nano-install-${MINGW_CHOST}" install
+    make DESTDIR="${pkgdir}/nano-install-${MSYSTEM}" install
 
     cd ${pkgdir}${MINGW_PREFIX}
 
@@ -133,13 +134,13 @@ package() {
     multilibs=($(bin/${_target}-gcc -print-multi-lib 2>/dev/null))
     for multilib in "${multilibs[@]}"; do
         dir="${multilib%%;*}"
-        from_dir=${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/"$dir"
+        from_dir=${pkgdir}/nano-install-${MSYSTEM}${MINGW_PREFIX}/${_target}/lib/"$dir"
         to_dir=${_target}/lib/"$dir"
 
         cp -f "$from_dir"/libstdc++.a "$to_dir"/libstdc++_nano.a
         cp -f "$from_dir"/libsupc++.a "$to_dir"/libsupc++_nano.a
     done
-    rm -r ${pkgdir}/nano-install-${MINGW_CHOST}
+    rm -r ${pkgdir}/nano-install-${MSYSTEM}
 
     # strip target binaries
     find lib/gcc/${_target}/${pkgver} ${_target}/lib -type f -and \( -name \*.a -or -name \*.o \) -exec ${_target}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc '{}' \;
