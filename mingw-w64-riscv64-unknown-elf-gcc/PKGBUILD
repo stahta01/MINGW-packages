@@ -1,18 +1,25 @@
-# Maintainer: Fabien Chouteau <chouteau@adacore.com>
+# Maintainer:  Fabien Chouteau <chouteau@adacore.com>
+# Contributor: Tim Stahlhut <stahta01@gmail.com>
 # Based on mingw-w64-arm-none-eabi-gcc
 
 _realname=gcc
 _target=riscv64-unknown-elf
 
-_enable_ada=yes
+_enable_ada=no
 
 pkgbase=mingw-w64-${_target}-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}")
-pkgver=10.1.0
-pkgrel=2
+pkgver=11.3.0
+pkgrel=1
+_git_tag= #releases/gcc-${pkgver%%+*}
+if [ -n "$_git_tag" ]; then
+  _sourcedir=${_realname}-git
+else
+  _sourcedir=gcc-${pkgver}
+fi
 pkgdesc='GNU Tools for RISC-V Embedded Processors - GCC (mingw-w64)'
 arch=('any')
-mingw_arch=('mingw32' 'mingw64')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64')
 license=('GPL')
 url='https://www.gnu.org/software/gcc/gcc.html'
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
@@ -32,14 +39,29 @@ makedepends=(
     $([[ "$_enable_ada" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-gcc-ada")
 )
 options=('!emptydirs' '!strip')
-source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/gcc-${pkgver}.tar.xz")
-sha256sums=('b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2')
+if [ -n "$_git_tag" ]; then
+  source+=(${_sourcedir}::"git+https://github.com/gcc-mirror/gcc.git#tag=${_git_tag}")
+  sha256sums=('SKIP')
+else
+  source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver%%+*}/gcc-${pkgver%%+*}.tar.xz")
+  sha256sums=('e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff')
+fi
+
+if [ -n "$_git_tag" ]; then
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  _gcc_version=$(head -n 34 gcc/BASE-VER | sed -e 's/.* //' | tr -d '"\n')
+  printf "%s+g%s" "$_gcc_version" $(git rev-parse --short=12 HEAD)
+}
+fi
 
 prepare() {
-    cd ${srcdir}/gcc-${pkgver}
+    cd ${srcdir}/${_sourcedir}
 
-    mkdir gcc-build-${MINGW_CHOST}
-    mkdir gcc-build-nano-${MINGW_CHOST}
+    [[ -d gcc-build-${MSYSTEM} ]] && rm -rf gcc-build-${MSYSTEM}
+    mkdir gcc-build-${MSYSTEM}
+    [[ -d gcc-build-nano-${MSYSTEM} ]] && rm -rf gcc-build-nano-${MSYSTEM}
+    mkdir gcc-build-nano-${MSYSTEM}
 }
 
 _build_gcc() {
@@ -70,6 +92,8 @@ _build_gcc() {
         --disable-threads \
         --disable-tls \
         --disable-libada \
+        --with-pkgversion="Rev${pkgrel}, Built by MSYS2 project" \
+        --with-bugurl="https://github.com/msys2/MINGW-packages/issues" \
         --with-gnu-as \
         --with-gnu-ld \
         --with-system-zlib \
@@ -88,10 +112,10 @@ _build_gcc() {
         LDFLAGS="${_GCC_LDFLAGS}"
 
     make INHIBIT_LIBC_CFLAGS='-DUSE_TM_CLONE_REGISTRY=0'
-	
-	if [[ "${_languages}" == *ada* ]]; then
-		make -C gcc cross-gnattools
-		make -C gcc ada.all.cross
+
+    if [[ "${_languages}" == *ada* ]]; then
+        make -C gcc cross-gnattools
+        make -C gcc ada.all.cross
     fi
 }
 
@@ -102,27 +126,27 @@ build() {
         _languages+=",ada"
     fi
 
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MINGW_CHOST}
+    cd ${srcdir}/${_sourcedir}/gcc-build-${MSYSTEM}
 
     export CFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections'
     export CXXFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections'
     _build_gcc ${_languages}
 
     # Build libstdc++ without exceptions support (the 'nano' variant)
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MINGW_CHOST}
-	
+    cd ${srcdir}/${_sourcedir}/gcc-build-nano-${MSYSTEM}
+    
     export CFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections -fno-exceptions'
     export CXXFLAGS_FOR_TARGET='-g -Os -ffunction-sections -fdata-sections -fno-exceptions'
-	# Only C and C++ are required for the nano build
+    # Only C and C++ are required for the nano build
     _build_gcc "c,c++"
 }
 
 package() {
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-${MINGW_CHOST}
+    cd ${srcdir}/${_sourcedir}/gcc-build-${MSYSTEM}
 
     make DESTDIR="${pkgdir}" install
 
-    cd ${srcdir}/gcc-${pkgver}/gcc-build-nano-${MINGW_CHOST}
+    cd ${srcdir}/${_sourcedir}/gcc-build-nano-${MSYSTEM}
 
     mkdir ${pkgdir}/nano-install-${MINGW_CHOST}
 
@@ -131,12 +155,12 @@ package() {
     cd ${pkgdir}${MINGW_PREFIX}
 
     # we need only libstdc nano files
-    multilibs=`ls ${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/`
+    multilibs=`ls -d ${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/`
     echo "copy libstdc++_nano.a for each of:" ${multilibs}
     for multilib in ${multilibs[@]}; do
         echo "Listing ABIs for:" ${multilib}
         echo "in" ${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/${multilib}/
-        abis=`ls ${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/${multilib}/`
+        abis=`ls -d ${pkgdir}/nano-install-${MINGW_CHOST}${MINGW_PREFIX}/${_target}/lib/${multilib}/`
         echo ${multilib} " ABI(s):" ${abis}
         for abi in ${abis[@]}; do
             dir=${multilib}/${abi}
@@ -150,10 +174,10 @@ package() {
     rm -r ${pkgdir}/nano-install-${MINGW_CHOST}
 
     # strip target binaries
-    find lib/gcc/${_target}/${pkgver} ${_target}/lib -type f -and \( -name \*.a -or -name \*.o \) -exec ${_target}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc '{}' \;
+    find lib/gcc/${_target}/${pkgver%%+*} ${_target}/lib -type f -and \( -name \*.a -or -name \*.o \) -exec ${_target}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc '{}' \;
 
     # strip host binaries
-    find bin/ lib/gcc/${_target}/${pkgver} -type f -and \( -executable \) -exec strip '{}' \;
+    find bin/ lib/gcc/${_target}/${pkgver%%+*} -type f -and \( -executable \) -exec strip '{}' \;
 
     # Remove files that conflict with host gcc package
     rm -r share/man/man7
