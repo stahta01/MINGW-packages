@@ -67,6 +67,7 @@ source=("https://ftp.gnu.org/gnu/gcc/${_realname}-${pkgver%%+*}/${_realname}-${p
         0140-gcc-diagnostic-color.patch
         0200-add-m-no-align-vector-insn-option-for-i386.patch
         0300-override-builtin-printf-format.patch
+        0400-gcc-Make-stupid-AT-T-syntax-not-default.patch
         2000-enable-rust.patch
         2001-fix-building-rust-on-mingw-w64.patch
         "2f7e7bfa3c6327793cdcdcb5c770b93cecd49bd0.patch::https://gcc.gnu.org/git/?p=gcc.git;a=patch;h=2f7e7bfa3c6327793cdcdcb5c770b93cecd49bd0"
@@ -89,6 +90,7 @@ sha256sums=('e275e76442a6067341a27f04c5c6b83d8613144004c0413528863dc6b5c743da'
             'e0a5b470f49a29f20215cc9f9d04c1cb9969dff6f0e546542799d3a693ef1c84'
             'c34f9e71b5a092be1987ad4c65891742c74c9eb8ef6560100e751cd31375f579'
             'f73c8d1701762fed7d8102d17d8e4416a4cc5e600e297a89c2e1fe09cd743a1c'
+            'ebbd37e62e5420fc90c9365ebab9bb1a3baef37bf86cf9f059398023552c9ee8'
             '693a91a863a706b3526af01c9de5ce8295c59ef0f56f009bcfbf79a93cba2728'
             'e78d51c908cd4e5c905c62e8350db1c609479bb95333c67f706b56974226fd94'
             '585968957f4519aa7219de4804e96debe7592df047e497b99ea0ae073e6f57d3'
@@ -154,6 +156,9 @@ prepare() {
   # Related bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95130
   apply_patch_with_msg \
     0300-override-builtin-printf-format.patch
+
+  apply_patch_with_msg \
+    0400-gcc-Make-stupid-AT-T-syntax-not-default.patch
 
   # https://salsa.debian.org/toolchain-team/gcc/-/blob/b953a3f9/debian/patches/rust-enabled.diff
   apply_patch_with_msg \
