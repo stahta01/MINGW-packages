@@ -58,7 +58,8 @@ license=('spdx:MIT' 'LGPL-2.1+' 'GPL-2.0+')
 depends=()
 makedepends=('git' 'm4' 'make' 'p7zip'
              'patch' 'perl' 'rsync' 'gcc'
-             "${MINGW_PACKAGE_PREFIX}-gcc-fortran"
+             $([[ ${MINGW_PACKAGE_PREFIX} == *-clang-* ]] || echo \
+               "${MINGW_PACKAGE_PREFIX}-gcc-fortran")
              "${MINGW_PACKAGE_PREFIX}-python"
              "${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-cc")
@@ -330,8 +331,10 @@ package_julia() {
   depends=()
   conflicts=()
   if [[ "$MSYSTEM" != "MINGW32" ]]; then
-    depends+=("${MINGW_PACKAGE_PREFIX}-gcc-libs")
-    depends+=("${MINGW_PACKAGE_PREFIX}-gcc-libgfortran")
+    if [[ "$MSYSTEM" != "CLANG64" ]]; then
+      depends+=("${MINGW_PACKAGE_PREFIX}-gcc-libs")
+      depends+=("${MINGW_PACKAGE_PREFIX}-gcc-libgfortran")
+    fi
     depends+=("${MINGW_PACKAGE_PREFIX}-libwinpthread")
     depends+=("${MINGW_PACKAGE_PREFIX}-pcre2")
   fi
