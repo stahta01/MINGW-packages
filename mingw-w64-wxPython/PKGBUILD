@@ -6,7 +6,7 @@ _wx_basever=3.2
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=4.2.1
-pkgrel=2
+pkgrel=3
 pkgdesc="A wxWidgets GUI toolkit for Python (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
@@ -70,8 +70,7 @@ build() {
     --no_allmo --no_magic --regenerate_sysconfig --jobs=${_jobs#-j} \
     dox sip
 
-  # Use MSYS2 Python because, with mingw-w64 Python, waf has issues using
-  # the wx-config* shell script.
+  # Use sh.exe because waf has issues using the wx-config* shell script.
   MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
   CC_NAME=${CC} CC="${MINGW_PREFIX}/bin/${CC}.exe" \
   CXX_NAME=${CXX} CXX="${MINGW_PREFIX}/bin/${CXX}.exe" \
