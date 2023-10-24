@@ -5,7 +5,7 @@ pkgbase=mingw-w64-${_realname}-library
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-footprints"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-symbols"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-templates"
-         "${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D"
+         #"${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-meta")
 pkgver=7.0.8
 pkgrel=2
@@ -22,12 +22,12 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
 options=('!strip')
 source=("https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${pkgver}/kicad-footprints-${pkgver}.tar.bz2"
         "https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/${pkgver}/kicad-symbols-${pkgver}.tar.bz2"
-        "https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${pkgver}/kicad-templates-${pkgver}.tar.bz2"
-        "https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.bz2")
+        "https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${pkgver}/kicad-templates-${pkgver}.tar.bz2")
+        #"https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.bz2")
 sha256sums=('657e2edd577a47647095d3a3cda0a2d496ad24bcb017f078133d34c10ba5c661'
             'ea5f7e3c6b7707752c14885b25ac8bb9cbfd4dffcbabc32837d98a0aa20b05fc'
-            'da0bbbbcea5c050f1cc81e9aadca2d79f4393f9341ba071d635bb39bebd377d5'
-            '22d7f4a5759860a7b021a204ce9a5d74c6cdd15776246587d3d861b4d9fb4df3')
+            'da0bbbbcea5c050f1cc81e9aadca2d79f4393f9341ba071d635bb39bebd377d5')
+            #'22d7f4a5759860a7b021a204ce9a5d74c6cdd15776246587d3d861b4d9fb4df3')
 
 build() {
   declare -a extra_config
@@ -37,7 +37,7 @@ build() {
     extra_config+=("-DCMAKE_BUILD_TYPE=Debug")
   fi
 
-  for _s in "footprints" "symbols" "templates" "packages3D"; do
+  for _s in "footprints" "symbols" "templates"; do # "packages3D"; do
     msg2 "Build kicad-${_s}"
     [[ -d "${srcdir}"/build-${_s}-${MSYSTEM} ]] && rm -rf "${srcdir}"/build-${_s}-${MSYSTEM}
     mkdir -p "${srcdir}/build-${_s}-${MSYSTEM}" && cd "${srcdir}/build-${_s}-${MSYSTEM}"
