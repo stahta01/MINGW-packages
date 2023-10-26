@@ -8,15 +8,16 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-footprints"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-meta")
 pkgver=7.0.8
-pkgrel=1
+pkgrel=2
 pkgdesc="Support libraries for KiCad (mingw-w64)"
 arch=('any')
-mingw_arch=('mingw64' 'ucrt64' 'clang64') # 'mingw32' 'clang32')
+mingw_arch=('mingw64' 'ucrt64' 'clang64' 'mingw32' 'clang32')
 url='https://www.kicad.org/'
 license=("spdx:GPL-3.0-or-later")
 groups=("${MINGW_PACKAGE_PREFIX}-eda")
 depends=()
 makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             $([[ ${MSYSTEM} == "CLANG32" || ${MSYSTEM} == "MINGW32" ]] && echo "mingw-w64-ucrt-x86_64-cmake")
              "${MINGW_PACKAGE_PREFIX}-ninja")
 options=('!strip')
 source=("https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${pkgver}/kicad-footprints-${pkgver}.tar.bz2"
@@ -61,7 +62,11 @@ package_footprints() {
 
   cd "${srcdir}/build-footprints-${MSYSTEM}"
 
-  DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install .
+  if [[ ${MSYSTEM} == "CLANG32" || ${MSYSTEM} == "MINGW32" ]]; then
+    DESTDIR="${pkgdir}" /ucrt64/bin/cmake.exe --install .
+  else
+    DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install .
+  fi
 }
 
 package_symbols() {
@@ -93,7 +98,11 @@ package_packages3D() {
 
   cd "${srcdir}/build-packages3D-${MSYSTEM}"
 
-  DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install .
+  if [[ ${MSYSTEM} == "CLANG32" || ${MSYSTEM} == "MINGW32" ]]; then
+    DESTDIR="${pkgdir}" /ucrt64/bin/cmake.exe --install .
+  else
+    DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install .
+  fi
 }
 
 package_meta() {
