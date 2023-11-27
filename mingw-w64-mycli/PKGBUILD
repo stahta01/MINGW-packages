@@ -1,0 +1,43 @@
+# Maintainer:
+# Contributor:
+
+_realname=mycli
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=1.27.0
+pkgrel=1
+pkgdesc='A Terminal Client for MySQL with AutoCompletion and Syntax Highlighting (mingw-w64)'
+arch=('any')
+url='https://github.com/dbcli/mycli'
+license=('BSD')
+depends=(
+    "${MINGW_PACKAGE_PREFIX}-python"
+    "${MINGW_PACKAGE_PREFIX}-python-click"
+    "${MINGW_PACKAGE_PREFIX}-python-cryptography"
+    "${MINGW_PACKAGE_PREFIX}-python-pygments"
+    "${MINGW_PACKAGE_PREFIX}-python-prompt_toolkit"
+    "${MINGW_PACKAGE_PREFIX}-python-pymysql"
+    "${MINGW_PACKAGE_PREFIX}-python-sqlparse"
+    "${MINGW_PACKAGE_PREFIX}-python-sqlglot"
+    "${MINGW_PACKAGE_PREFIX}-python-configobj"
+    "${MINGW_PACKAGE_PREFIX}-python-cli_helpers"
+    "${MINGW_PACKAGE_PREFIX}-python-pyperclip"
+    "${MINGW_PACKAGE_PREFIX}-python-pyaes"
+)
+makedepends=("${MINGW_PACKAGE_PREFIX}-python-setuptools")
+optdepends=("${MINGW_PACKAGE_PREFIX}-python-paramiko: SSH support")
+options=(!emptydirs)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/dbcli/mycli/archive/v${pkgver}.tar.gz")
+sha256sums=('e60d819aca772d72dd30757c10b223809add6759fc8e896446e94410146c7fab')
+
+build() {
+    cd "$srcdir/${_realname}-$pkgver"
+    ${MINGW_PREFIX}/bin/python setup.py build
+}
+
+package() {
+    cd "$srcdir/${_realname}-$pkgver"
+    install -D -m 644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+    ${MINGW_PREFIX}/bin/python setup.py install --root="$pkgdir" --optimize=1
+}
