@@ -35,11 +35,10 @@ build() {
     --build=${MINGW_CHOST} \
     --host=${MINGW_CHOST}
 
-  # WARNING: Dirty hack due to absence of conf.py in source directory.
-  #          As it is required by python-sphinx to build man pages.
-
-  cp "${srcdir}/build-${MINGW_CHOST}/doc/sphinx/conf.py" \
-  "${srcdir}/${_realname}-release-${pkgver}/doc/sphinx/conf.py"
+  ## Try without these and then try these one at a time
+  #make config.h
+  #make doc/sphinx/conf.py
+  #make lib/includes/wslay/wslayver.h
 
   make --jobs=1
 }
