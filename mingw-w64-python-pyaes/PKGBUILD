@@ -2,8 +2,8 @@
 # Contributor: 
 
 _realname=python-pyaes
-pkgbase=mingw-w64-python-${_realname}
-pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 _pipname=pyaes
 pkgver=1.6.1
 pkgrel=1
