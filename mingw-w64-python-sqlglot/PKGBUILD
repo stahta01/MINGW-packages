@@ -1,0 +1,29 @@
+# Maintainer:
+# Contributor:
+
+_realname=python-sqlglot
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=17.13.0
+pkgrel=1
+pkgdesc='An easily customizable SQL parser and transpiler (mingw-w64)'
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url='https://github.com/tobymao/sqlglot'
+license=('MIT')
+depends=("${MINGW_PACKAGE_PREFIX}-python")
+makedepends=("${MINGW_PACKAGE_PREFIX}-python-setuptools")
+options=(!emptydirs)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/tobymao/sqlglot/archive/v${pkgver}.tar.gz")
+sha256sums=('deeab401d0bedfe01cadfbb9606d9a630de984f2805bd35953bcc052a4de6c0c')
+
+build() {
+    cd "$srcdir/sqlglot-${pkgver}"
+    ${MINGW_PREFIX}/bin/python setup.py build
+}
+
+package() {
+    cd "$srcdir/sqlglot-${pkgver}"
+    install -D -m 644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    ${MINGW_PREFIX}/bin/python setup.py install --root="$pkgdir" --optimize=1
+}
