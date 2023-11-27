@@ -41,7 +41,7 @@ build() {
   cp "${srcdir}/build-${MINGW_CHOST}/doc/sphinx/conf.py" \
   "${srcdir}/${_realname}-release-${pkgver}/doc/sphinx/conf.py"
 
-  make
+  make --jobs=1
 }
 
 package() {
