@@ -2,8 +2,8 @@
 # Contributor:
 
 _realname=python-cli_helpers
-pkgbase=mingw-w64-python-${_realname}
-pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 pkgver=2.3.0
 pkgrel=1
 pkgdesc='Python helpers for common CLI tasks (mingw-w64)'
