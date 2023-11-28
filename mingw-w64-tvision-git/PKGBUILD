@@ -1,0 +1,47 @@
+# Maintainer:
+# Contributor: Tim Stahlhut
+
+# Based on https://aur.archlinux.org/packages/tvision-git
+
+_basename=tvision
+_pkgname=${_basename}-git
+_sourcedir=${_basename}-git
+pkgbase=mingw-w64-${_pkgname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_pkgname}")
+pkgver=586.r608.gf369a73
+pkgrel=1
+pkgdesc="Modern port of Turbo Vision 2.0 with cross-platform and Unicode support (mingw-w64)"
+arch=(any)
+mingw_arch=('mingw64' 'ucrt64' 'mingw32')
+url="https://github.com/magiblot/tvision"
+license=('MIT' 'custom:publicdomain')
+depends=("${MINGW_PACKAGE_PREFIX}-ncurses") # "${MINGW_PACKAGE_PREFIX}-gpm")
+makedepends=('git' "${MINGW_PACKAGE_PREFIX}-cmake")
+provides=("${MINGW_PACKAGE_PREFIX}-${_basename}" "${MINGW_PACKAGE_PREFIX}-libtvision.a")
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_basename}")
+source=("${_sourcedir}::git+$url")
+sha256sums=('SKIP')
+
+pkgver() {
+    git -C "${_sourcedir}" describe --long --tags | sed 's/^r//;s/-/.r/;s/-/./'
+}
+
+build() {
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
+    "${MINGW_PREFIX}"/bin/cmake \
+        -B build-${MSYSTEM} \
+        -S "${_sourcedir}" \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+        -DTV_BUILD_EXAMPLES=OFF \
+        -DTV_REDUCE_APP_SIZE=ON \
+        -Wno-dev
+    "${MINGW_PREFIX}"/bin/cmake --build build-${MSYSTEM}
+}
+
+package() {
+    DESTDIR="$pkgdir" "${MINGW_PREFIX}"/bin/cmake --install build-${MSYSTEM}
+    cd "${_sourcedir}"
+    install -Dvm644 COPYRIGHT -t "$pkgdir${MINGW_PREFIX}/share/licenses/${_basename}/"
+    install -Dvm644 README.md -t "$pkgdir${MINGW_PREFIX}/share/doc/${_basename}/"
+}
