@@ -1,0 +1,20 @@
+From 04659901f184247b131a3f1e5667e45e0490e957 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sat, 20 Jan 2024 18:37:21 -0500
+Subject: Set ADA_CFLAGS to -masm=att in mh-mingw
+
+---
+ config/mh-mingw | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/config/mh-mingw b/config/mh-mingw
+index e91367a7112..c4796bf7b70 100644
+--- a/config/mh-mingw
++++ b/config/mh-mingw
+@@ -13,3 +13,5 @@ STAGE4_CXXFLAGS += -D__USE_MINGW_ACCESS
+ # as GCC turns out to need that much more to pass all the limits-* tests.
+ LDFLAGS += -Wl,--stack,12582912
+ BOOT_LDFLAGS += -Wl,--stack,12582912
++
++ADA_CFLAGS = -masm=att
+-- 
