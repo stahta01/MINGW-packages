@@ -1,0 +1,49 @@
+# Contributor: Tim Stahlhut
+
+_basename=codeblocks
+_utilname=cbp2make
+pkgbase=mingw-w64-${_utilname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_utilname}")
+_revision=13539
+pkgver=147.svn13539
+pkgrel=1
+pkgdesc="Utility to convert an Codeblocks project to makefile (mingw-w64)"
+arch=('any')
+mingw_arch=('ucrt64' 'clang64' 'mingw64' 'mingw32' 'clang32')
+url='http://codeblocks.org'
+msys2_repository_url="https://sourceforge.net/p/codeblocks/code/HEAD/tree/trunk/"
+license=('spdx:GPL-3.0-or-later')
+depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs")
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc"
+             "subversion")
+source=("$_basename::svn+https://svn.code.sf.net/p/codeblocks/code/trunk#revision=$_revision")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "${_basename}"
+  local _major=$(head -n 14 src/tools/cbp2make/src/revision.h | grep 'REVISION_NUMBER' | sed -e 's/.* //' | tr '\n' '.' | sed 's/.$/\n/')
+  printf "%s.svn%s" "$_major" "$_revision"
+}
+
+prepare() {
+  cd "${_basename}"
+
+  svn cleanup --remove-unversioned --remove-ignored ./src
+}
+
+build() {
+  cd "${_basename}/src/tools/cbp2make"
+
+  make -f cbp2make.cbp.mak.unix clean
+  make --jobs=1 -f cbp2make.cbp.mak.unix debug
+}
+
+package() {
+  cd "${_basename}/src/tools/cbp2make"
+
+  mkdir -p "${pkgdir}${MINGW_PREFIX}/bin"
+
+  cp bin/Debug/cbp2make.exe "${pkgdir}${MINGW_PREFIX}/bin"
+
+  install -Dm644 "${srcdir}/${_basename}/src/tools/cbp2make/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_utilname}/LICENSE"
+}
