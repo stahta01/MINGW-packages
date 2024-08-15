@@ -1,0 +1,14 @@
+--- a/src/sdk/configmanager.cpp	(revision 13538)
++++ b/src/sdk/configmanager.cpp	(working copy)
+@@ -1497,7 +1497,11 @@
+     if (plugin_path_global.IsEmpty())
+     {
+         if (platform::windows)
++#if (wxFILE_SEP_PATH == wxFILE_SEP_PATH_UNIX)
+             ConfigManager::plugin_path_global = app_path + _T("/../lib/codeblocks/plugins");
++#else
++            ConfigManager::plugin_path_global = app_path + _T("\\..\\lib\\codeblocks\\plugins");
++#endif
+         else if (platform::macosx)
+             ConfigManager::plugin_path_global = data_path_global + _T("/plugins");
+         else
