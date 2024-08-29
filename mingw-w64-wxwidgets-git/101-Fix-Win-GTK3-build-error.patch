@@ -1,0 +1,71 @@
+From 4ea869ec906ef42d7fc8f440ba7cbc95ce7506cb Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Mon, 24 Mar 2025 21:45:57 -0400
+Subject: Fix wxGTK/Win build error
+
+---
+ include/wx/msw/init.h | 4 ++++
+ src/common/dlgcmn.cpp | 3 +++
+ src/common/sizer.cpp  | 3 +++
+ src/gtk/window.cpp    | 3 +++
+ 4 files changed, 13 insertions(+)
+
+diff --git a/include/wx/msw/init.h b/include/wx/msw/init.h
+index 8cacdb2c36..91d369a582 100644
+--- a/include/wx/msw/init.h
++++ b/include/wx/msw/init.h
+@@ -23,7 +23,11 @@ extern int WXDLLIMPEXP_BASE wxEntry();
+ #if wxUSE_GUI
+ 
+ // we need HINSTANCE declaration to define WinMain()
++#if defined(__WXGTK__)
++#include <windef.h>
++#else
+ #include "wx/msw/wrapwin.h"
++#endif
+ 
+ #ifndef SW_SHOWNORMAL
+     #define SW_SHOWNORMAL 1
+diff --git a/src/common/dlgcmn.cpp b/src/common/dlgcmn.cpp
+index 0f23ae373d..db5d96e2a1 100644
+--- a/src/common/dlgcmn.cpp
++++ b/src/common/dlgcmn.cpp
+@@ -30,6 +30,9 @@
+     #include "wx/stattext.h"
+     #include "wx/sizer.h"
+     #include "wx/containr.h"
++    #if defined(__WINDOWS__) && defined(__WXGTK__)
++        #include "wx/msw/wrapwin.h"
++    #endif
+ #endif
+ 
+ #include "wx/statline.h"
+diff --git a/src/common/sizer.cpp b/src/common/sizer.cpp
+index fd937a2a38..2639080a72 100644
+--- a/src/common/sizer.cpp
++++ b/src/common/sizer.cpp
+@@ -26,6 +26,9 @@
+     #include "wx/statbox.h"
+     #include "wx/toplevel.h"
+     #include "wx/app.h"
++    #if defined(__WINDOWS__) && defined(__WXGTK__)
++        #include "wx/msw/wrapwin.h"
++    #endif
+ #endif // WX_PRECOMP
+ 
+ #include "wx/display.h"
+diff --git a/src/gtk/window.cpp b/src/gtk/window.cpp
+index 6ea2e80801..2f6984acac 100644
+--- a/src/gtk/window.cpp
++++ b/src/gtk/window.cpp
+@@ -25,6 +25,9 @@
+     #include "wx/msgdlg.h"
+     #include "wx/math.h"
+     #include "wx/module.h"
++    #if defined(__WINDOWS__)
++        #include "wx/msw/wrapwin.h"
++    #endif
+ #endif
+ 
+ #include "wx/display.h"
+-- 
