@@ -431,7 +431,7 @@ package_wxwidgets3.2-common() {
 
 package_wxwidgets3.2-msw-cb_headers() {
   pkgdesc="private wxWidgets ${_wx_basever} MSW headers needed by Code::Blocks (mingw-w64)"
-  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
+  optdepends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/include/wx-${_wx_basever}/wx/msw/private
   cd ${pkgdir}${MINGW_PREFIX}/include/wx-${_wx_basever}/wx/msw/private
