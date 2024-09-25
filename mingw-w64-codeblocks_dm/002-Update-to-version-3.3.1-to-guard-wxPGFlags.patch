@@ -1,0 +1,71 @@
+From cd48cd06846b5f2e228f161756a281ec41618e16 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 21 Jan 2026 19:42:48 -0500
+Subject: Update to version 3.3.1 to guard wxPGFlags
+
+---
+ .../contrib/wxSmith/wxwidgets/defitems/wxsstatusbar.cpp       | 4 ++--
+ .../wxSmith/wxwidgets/properties/wxscolourproperty.cpp        | 2 +-
+ src/plugins/contrib/wxSmithContribItems/wxchart/wxschart.cpp  | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsstatusbar.cpp b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsstatusbar.cpp
+index c85209195..467ee9c75 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsstatusbar.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsstatusbar.cpp
+@@ -148,7 +148,7 @@ void wxsStatusBar::OnAddExtraProperties(wxsPropertyGridManager* Grid)
+     for ( int i=0; i<m_Fields; i++ )
+     {
+         wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"),i+1),wxPG_LABEL));
+-#if wxCHECK_VERSION(3, 3, 0)
++#if wxCHECK_VERSION(3, 3, 1)
+         ParentProp->ChangeFlag(wxPGFlags::ReadOnly, true);
+ #else
+         ParentProp->ChangeFlag(wxPG_PROP_READONLY, true);
+@@ -195,7 +195,7 @@ void wxsStatusBar::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id
+             for ( int i = m_Fields; i<NewFields; i++ )
+             {
+                 wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"),i+1),wxPG_LABEL));
+-#if wxCHECK_VERSION(3, 3, 0)
++#if wxCHECK_VERSION(3, 3, 1)
+                 ParentProp->ChangeFlag(wxPGFlags::ReadOnly, true);
+ #else
+                 ParentProp->ChangeFlag(wxPG_PROP_READONLY, true);
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+index d0eb3f71d..c20422059 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+@@ -205,7 +205,7 @@ namespace
+         else
+             cpv.Init( type, *wxWHITE );
+ 
+-#if wxCHECK_VERSION(3, 3, 0)
++#if wxCHECK_VERSION(3, 3, 1)
+         m_flags |= wxPGFlags::Reserved_1; // Colour selection cannot be changed.
+ #else
+         m_flags |= wxPG_PROP_STATIC_CHOICES; // Colour selection cannot be changed.
+diff --git a/src/plugins/contrib/wxSmithContribItems/wxchart/wxschart.cpp b/src/plugins/contrib/wxSmithContribItems/wxchart/wxschart.cpp
+index dc4f5d7c9..7a69c12c2 100644
+--- a/src/plugins/contrib/wxSmithContribItems/wxchart/wxschart.cpp
++++ b/src/plugins/contrib/wxSmithContribItems/wxchart/wxschart.cpp
+@@ -346,7 +346,7 @@ void wxsChart::AppendPropertyForSet(wxsPropertyGridManager* Grid,int Position)
+     wxString SetName = wxString::Format(_("Set %d"),Position+1);
+ 
+     Desc->Id = Grid->Append(new wxParentProperty(SetName,wxPG_LABEL));
+-#if wxCHECK_VERSION(3, 3, 0)
++#if wxCHECK_VERSION(3, 3, 1)
+     Desc->Id->ChangeFlag(wxPGFlags::ReadOnly, true);
+ #else
+     Desc->Id->ChangeFlag(wxPG_PROP_READONLY, true);
+@@ -458,7 +458,7 @@ void wxsChart::AppendPropertyForPoint(wxsPropertyGridManager* Grid,ChartPointsDe
+     wxString Name = wxString::Format(_("Point %d"),Position+1);
+ 
+     Desc->Id = Grid->AppendIn(SetDesc->Id, new wxParentProperty(Name,wxPG_LABEL));
+-#if wxCHECK_VERSION(3, 3, 0)
++#if wxCHECK_VERSION(3, 3, 1)
+     Desc->Id->ChangeFlag(wxPGFlags::ReadOnly, true);
+ #else
+     Desc->Id->ChangeFlag(wxPG_PROP_READONLY, true);
+-- 
+2.51.2.windows.1
+
