@@ -1,0 +1,22 @@
+From 7ff7fad6654556ccfc60ba8f22243ce8fd3c0de8 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 25 Feb 2025 20:56:31 -0500
+Subject: Set MSWEnableDarkMode(DarkMode_Always) in OnInit
+
+---
+ src/src/app.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/src/app.cpp b/src/src/app.cpp
+index ee8802851..abe1fbf9b 100644
+--- a/src/src/app.cpp
++++ b/src/src/app.cpp
+@@ -592,6 +592,7 @@ void CodeBlocksApp::InitLocale()
+ bool CodeBlocksApp::OnInit()
+ {
+ #ifdef __WXMSW__
++    MSWEnableDarkMode(DarkMode_Always); // Force dark mode
+     InitCommonControls();
+ #endif
+ 
+-- 
