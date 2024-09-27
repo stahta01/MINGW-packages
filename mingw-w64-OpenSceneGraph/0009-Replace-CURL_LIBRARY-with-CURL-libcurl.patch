@@ -1,0 +1,30 @@
+From 145f466a36141913730cc8800703e41c8cb6ddf5 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 27 Sep 2024 14:25:55 -0400
+Subject: Replace "CURL_LIBRARY" with "CURL::libcurl"
+
+---
+ src/osgPlugins/curl/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/osgPlugins/curl/CMakeLists.txt b/src/osgPlugins/curl/CMakeLists.txt
+index 667631f07..ce8d28539 100644
+--- a/src/osgPlugins/curl/CMakeLists.txt
++++ b/src/osgPlugins/curl/CMakeLists.txt
+@@ -23,11 +23,11 @@ SET(TARGET_H
+ 
+ IF(ZLIB_FOUND)   
+     SET(TARGET_LIBRARIES_VARS
+-        CURL_LIBRARY
++        CURL::libcurl
+         ZLIB_LIBRARIES)
+ ELSE()
+     SET(TARGET_LIBRARIES_VARS
+-        CURL_LIBRARY)
++        CURL::libcurl)
+ ENDIF()
+ 
+ IF(WIN32 OR MINGW)
+-- 
+2.45.2.windows.1
+
