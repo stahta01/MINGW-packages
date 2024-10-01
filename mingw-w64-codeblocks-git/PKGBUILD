@@ -1,7 +1,7 @@
 # Contributor: Mehdi Chinoune <mehdi.chinoune@hotmail.com>
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 
-_wx_basever=3.2
+_wx_basever=3.3
 
 _realname=codeblocks
 pkgbase=mingw-w64-${_realname}
@@ -102,7 +102,6 @@ package() {
 
   make install DESTDIR="${pkgdir}"
 
-  [[ -f "${pkgdir}${MINGW_PREFIX}/lib/libwxsmithlib.dll" ]] && mv "${pkgdir}"${MINGW_PREFIX}/lib/*.dll "${pkgdir}"${MINGW_PREFIX}/bin
   [[ -f "${pkgdir}${MINGW_PREFIX}/lib/codeblocks/bin/libwxchartctrl-0.dll" ]] && mv "${pkgdir}"${MINGW_PREFIX}/lib/codeblocks/bin/*.dll "${pkgdir}"${MINGW_PREFIX}/bin
 
   install -Dm644 "${srcdir}"/${_sourcedir}/COPYING \
