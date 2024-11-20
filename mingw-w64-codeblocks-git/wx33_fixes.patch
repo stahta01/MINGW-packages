@@ -1,0 +1,13 @@
+Index: src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp
+===================================================================
+--- a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp	(revision 13591)
++++ b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp	(working copy)
+@@ -25,6 +25,7 @@
+ #include "../wxsflags.h"
+ 
+ #include <wx/tokenzr.h>
++#include <wx/propgrid/propgrid.h>
+ 
+ // Helper macro for fetching variables
+ #define STYLEBITS   wxsVARIABLE(Object,Offset,long)
+---
