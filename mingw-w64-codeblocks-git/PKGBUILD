@@ -1,13 +1,13 @@
 # Contributor: Mehdi Chinoune <mehdi.chinoune@hotmail.com>
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 
-_wx_basever=3.2
+_wx_basever=3.3
 
 _realname=codeblocks
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 _basever=20.03
-pkgver=20.03.r13586
+pkgver=20.03.r13620
 pkgrel=1
 _sourcedir=${_realname}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
@@ -70,7 +70,7 @@ build() {
   ../${_sourcedir}/configure \
     --prefix="${MINGW_PREFIX}" \
     --disable-pch \
-    --with-contrib-plugins=all,-Valgrind
+    --with-contrib-plugins=all,-Valgrind #,-wxsmith,-wxsmithcontrib,-wxsmithaui
 
   make
 
