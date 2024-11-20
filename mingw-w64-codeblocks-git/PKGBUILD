@@ -1,7 +1,7 @@
 # Contributor: Mehdi Chinoune <mehdi.chinoune@hotmail.com>
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 
-_wx_basever=3.2
+_wx_basever=3.3
 
 _realname=codeblocks
 pkgbase=mingw-w64-${_realname}
@@ -70,7 +70,7 @@ build() {
   ../${_sourcedir}/configure \
     --prefix="${MINGW_PREFIX}" \
     --disable-pch \
-    --with-contrib-plugins=all,-Valgrind
+    --with-contrib-plugins=all,-Valgrind #,-wxsmith,-wxsmithcontrib,-wxsmithaui
 
   make
 
