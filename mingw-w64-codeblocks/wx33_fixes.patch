@@ -1,0 +1,58 @@
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp
+index 47861d7b7..aada3a7f9 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp
+@@ -25,6 +25,7 @@
+ #include "../wxsflags.h"
+ 
+ #include <wx/tokenzr.h>
++#include <wx/propgrid/propgrid.h>
+ 
+ // Helper macro for fetching variables
+ #define STYLEBITS   wxsVARIABLE(Object,Offset,long)
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+index 1474aab1c..6e4a75264 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+@@ -480,7 +480,11 @@ namespace
+         wxASSERT( propgrid );
+
+         // Must only occur when user triggers event
++#if wxCHECK_VERSION(3, 3, 0)
++        if ( !(propgrid->GetInternalFlags() & wxPropertyGrid::wxPG_FL_IN_HANDLECUSTOMEDITOREVENT) )
++#else
+         if ( !(propgrid->GetInternalFlags() & wxPG_FL_IN_HANDLECUSTOMEDITOREVENT) )
++#endif
+             return res;
+
+         wxColourPropertyValue val = GetVal();
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
+index 57b42059a..78442594f 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
++++ b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
+@@ -23,6 +23,7 @@
+ #ifndef WXSITEMEDITORCONTENT_H
+ #define WXSITEMEDITORCONTENT_H
+
++#include <wx/hashmap.h>
+ #include "wxsdrawingwindow.h"
+
+ class wxsItemEditorDragAssist;
+
+diff --git a/src/plugins/contrib/wxSmith/properties/wxsproperty.h b/src/plugins/contrib/wxSmith/properties/wxsproperty.h
+index c55fb5fa8..31d9f6c38 100644
+--- a/src/plugins/contrib/wxSmith/properties/wxsproperty.h
++++ b/src/plugins/contrib/wxSmith/properties/wxsproperty.h
+@@ -49,7 +49,11 @@ class wxsPropertyContainer;
+ #define wxEnumPropertyClass             wxEnumProperty
+ #define wxPG_VALUETYPE(T)               wxT(#T)
+ #define wxPGVariantToWxObjectPtr(A,B)   wxDynamicCast(A.GetWxObjectPtr(),B)
++#if wxCHECK_VERSION(3, 3, 0)
++#define wxPG_PROP_UNSPECIFIED           wxPGPropertyFlags::AutoUnspecified
++#else
+ #define wxPG_PROP_UNSPECIFIED           wxPG_EX_AUTO_UNSPECIFIED_VALUES
++#endif
+
+
+ /** \brief Class representing one property
+---
