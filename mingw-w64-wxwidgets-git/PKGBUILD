@@ -53,7 +53,8 @@ checkdepends=()
 options=('!strip' 'staticlibs' 'buildflags' '!debug')
 #options=('!strip' 'staticlibs' 'buildflags' 'debug')
 source=(
-  ${_sourcedir}::"git+https://github.com/wxWidgets/wxWidgets.git#branch=master"
+  ${_sourcedir}::"git+https://github.com/wxWidgets/wxWidgets.git#commit=b6e88ef422e333e32a52e08d2b159bb51035989d"
+  #${_sourcedir}::"git+https://github.com/wxWidgets/wxWidgets.git#branch=master"
 
   001-wxWidgets-3.0.2-relocate-prefix-in-bin-wx-config.patch
 
