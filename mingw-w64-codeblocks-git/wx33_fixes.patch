@@ -10,4 +10,39 @@ Index: src/plugins/contrib/wxSmith/wxwidgets/properties/wxsstyleproperty.cpp
  
  // Helper macro for fetching variables
  #define STYLEBITS   wxsVARIABLE(Object,Offset,long)
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+index 1474aab1c..808aa5c8d 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp
+@@ -480,7 +480,7 @@ namespace
+         wxASSERT( propgrid );
+
+         // Must only occur when user triggers event
+-        if ( !(propgrid->GetInternalFlags() & wxPG_FL_IN_HANDLECUSTOMEDITOREVENT) )
++        if ( !(propgrid->GetInternalFlags() & wxPropertyGrid::wxPG_FL_IN_HANDLECUSTOMEDITOREVENT) )
+             return res;
+
+         wxColourPropertyValue val = GetVal();
+@@ -578,7 +578,7 @@ namespace
+             int index = paintdata.m_choiceItem;
+             value = wxsColourValues[index];
+         }
+-        else if ( !(m_flags & wxPG_PROP_UNSPECIFIED) )
++        else if ( !(m_flags & wxPGPropertyFlags(wxPG_PROP_UNSPECIFIED)) )
+         {
+             value = GetVal().m_type;
+         }
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
+index 57b42059a..78442594f 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
++++ b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
+@@ -23,6 +23,7 @@
+ #ifndef WXSITEMEDITORCONTENT_H
+ #define WXSITEMEDITORCONTENT_H
+
++#include <wx/hashmap.h>
+ #include "wxsdrawingwindow.h"
+
+ class wxsItemEditorDragAssist;
+
 ---
