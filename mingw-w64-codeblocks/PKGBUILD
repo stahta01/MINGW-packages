@@ -31,8 +31,10 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              "zip"
              "subversion")
 optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client plugin")
-source=("$_realname::svn+https://svn.code.sf.net/p/codeblocks/code/trunk#revision=$_revision")
-sha256sums=('SKIP')
+source=("$_realname::svn+https://svn.code.sf.net/p/codeblocks/code/trunk#revision=$_revision"
+        'wx33_fixes.patch')
+sha256sums=('SKIP'
+            '4c4c4eff69bcf13c9cfeac520f5768262744196095ca8e5fd8680246500c92dd')
 
 apply_patch_with_msg() {
   for _patch in "$@"
@@ -44,6 +46,8 @@ apply_patch_with_msg() {
 
 prepare() {
   cd "${_realname}"
+
+  patch -Nbp1 -i "${srcdir}/wx33_fixes.patch"
 
   ./bootstrap
 }
