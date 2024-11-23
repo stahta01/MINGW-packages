@@ -59,7 +59,7 @@ pkgver() {
 prepare() {
   cd "${_sourcedir}"
 
-  patch -p1 -i "${srcdir}/wx33_fixes.patch"
+  patch -Nbp1 -i "${srcdir}/wx33_fixes.patch"
 
   ./bootstrap
 }
