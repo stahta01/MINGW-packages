@@ -26,18 +26,6 @@ index 1474aab1c..6e4a75264 100644
              return res;
 
          wxColourPropertyValue val = GetVal();
-@@ -578,7 +582,11 @@ namespace
-             int index = paintdata.m_choiceItem;
-             value = wxsColourValues[index];
-         }
-+#if wxCHECK_VERSION(3, 3, 0)
-+        else if ( !(m_flags & wxPGPropertyFlags(wxPG_EX_WINDOW_STYLES::wxPG_PROP_UNSPECIFIED)) )
-+#else
-         else if ( !(m_flags & wxPG_PROP_UNSPECIFIED) )
-+#endif
-         {
-             value = GetVal().m_type;
-         }
 diff --git a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
 index 57b42059a..78442594f 100644
 --- a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditorcontent.h
@@ -51,4 +39,20 @@ index 57b42059a..78442594f 100644
 
  class wxsItemEditorDragAssist;
 
+diff --git a/src/plugins/contrib/wxSmith/properties/wxsproperty.h b/src/plugins/contrib/wxSmith/properties/wxsproperty.h
+index c55fb5fa8..31d9f6c38 100644
+--- a/src/plugins/contrib/wxSmith/properties/wxsproperty.h
++++ b/src/plugins/contrib/wxSmith/properties/wxsproperty.h
+@@ -49,7 +49,11 @@ class wxsPropertyContainer;
+ #define wxEnumPropertyClass             wxEnumProperty
+ #define wxPG_VALUETYPE(T)               wxT(#T)
+ #define wxPGVariantToWxObjectPtr(A,B)   wxDynamicCast(A.GetWxObjectPtr(),B)
++#if wxCHECK_VERSION(3, 3, 0)
++#define wxPG_PROP_UNSPECIFIED           wxPGPropertyFlags::AutoUnspecified
++#else
+ #define wxPG_PROP_UNSPECIFIED           wxPG_EX_AUTO_UNSPECIFIED_VALUES
++#endif
+
+
+ /** \brief Class representing one property
 ---

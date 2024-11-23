@@ -36,7 +36,7 @@ optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client 
 source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
         'wx33_fixes.patch')
 sha256sums=('SKIP'
-            'fa7519a651946f40feac84d21ead7afa0342ab65abdbf9fd6849e421009850a5')
+            '4c4c4eff69bcf13c9cfeac520f5768262744196095ca8e5fd8680246500c92dd')
 
 apply_patch_with_msg() {
   for _patch in "$@"
