@@ -408,7 +408,6 @@ if [[ "$_build_msw" == "yes" ]] ; then
       --host=${MINGW_CHOST} \
       --target=${MINGW_CHOST} \
       --build=${MINGW_CHOST} \
-      --enable-compat30 \
       --with-msw \
       --with-cxx=20 \
       --enable-stl \
@@ -445,7 +444,6 @@ if [[ "$_build_msw" == "yes" ]] ; then
       --host=${MINGW_CHOST} \
       --target=${MINGW_CHOST} \
       --build=${MINGW_CHOST} \
-      --enable-compat30 \
       --with-msw \
       --with-cxx=20 \
       --enable-stl \
