@@ -27,7 +27,7 @@ pkgname=(
   $([[ "$_build_msw" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs${_namesuffix}")
   $([[ "$_build_msw" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw${_namesuffix}")
 )
-pkgver=3.3.0.0.v+4205.c1.g5edd516add0
+pkgver=3.3.0.0.v+4407.c1.g348f9060cee
 pkgrel=1
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
 arch=('any')
