@@ -26,6 +26,10 @@ pkgname=(
   $([[ "$_build_msw" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-cb_headers${_namesuffix}")     
   $([[ "$_build_msw" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs${_namesuffix}")
   $([[ "$_build_msw" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw${_namesuffix}")
+  $([[ "$_build_gtk3" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3-libs${_namesuffix}")
+  $([[ "$_build_gtk3" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3${_namesuffix}")
+  #$([[ "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs${_namesuffix}")
+  #$([[ "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt${_namesuffix}")
 )
 pkgver=3.3.0.0.v+4407.c1.g348f9060cee
 pkgrel=1
@@ -43,7 +47,7 @@ makedepends=(
   $([[ "$_build_gtk3" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-libsecret")
   $([[ "$_build_gtk3" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-libnotify")
   $([[ "$_build_gtk3" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-gtk3")
-  $([[ "$_build_qt"   == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-qt5")
+  $([[ "$_build_qt"   == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-qt5-base") # No idea which qt5 packages are needed
   "${MINGW_PACKAGE_PREFIX}-libpng"
   "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
   "${MINGW_PACKAGE_PREFIX}-libtiff"
@@ -119,7 +123,6 @@ build() {
   #
   # Configure options added to check for build issues
   #   --disable-precomp-headers
-  #   --with-cxx=20
   #
   # Configure options added to avoid possible future issues
   #   --enable-stl
@@ -129,7 +132,6 @@ build() {
   #   --disable-mediactrl
   #   --disable-webview
   #   --without-gtkprint
-  #   --enable-dynamicloader    # Did not seem to make a difference
   #
   # Configure options added to avoid errors under wxQT/Win:
   #   --disable-wxdib           # dnd sample build error
@@ -351,7 +353,6 @@ if [[ "$_build_gtk3" == "yes" ]] ; then
     --disable-mediactrl \
     --disable-webview \
     --without-gtkprint \
-    --enable-dynamicloader \
     "${_debug_options[@]}" \
     --without-opengl
 
@@ -387,7 +388,6 @@ if [[ "$_build_gtk3" == "yes" ]] ; then
     --disable-mediactrl \
     --disable-webview \
     --without-gtkprint \
-    --enable-dynamicloader \
     "${_debug_options[@]}" \
     --without-opengl
 
@@ -410,7 +410,6 @@ if [[ "$_build_msw" == "yes" ]] ; then
       --target=${MINGW_CHOST} \
       --build=${MINGW_CHOST} \
       --with-msw \
-      --with-cxx=20 \
       --enable-stl \
       --with-libpng=builtin \
       --with-libjpeg=builtin \
@@ -446,7 +445,6 @@ if [[ "$_build_msw" == "yes" ]] ; then
       --target=${MINGW_CHOST} \
       --build=${MINGW_CHOST} \
       --with-msw \
-      --with-cxx=20 \
       --enable-stl \
       --with-regex=builtin \
       --with-libpng=sys \
