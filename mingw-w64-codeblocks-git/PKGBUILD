@@ -33,8 +33,10 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              'git')
 optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client plugin"
             "${MINGW_PACKAGE_PREFIX}-cppcheck: needed by cppcheck plugin")
-source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git")
-sha256sums=('SKIP')
+source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
+        '101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch')
+sha256sums=('SKIP'
+            'dc662f789f2e9c830440adf7031a36f81813994c66c12b69a363016bddf3f16c')
 
 apply_patch_with_msg() {
   for _patch in "$@"
@@ -56,6 +58,8 @@ pkgver() {
 
 prepare() {
   cd "${_sourcedir}"
+
+  apply_patch_with_msg 101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch
 
   ./bootstrap
 }
