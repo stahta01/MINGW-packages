@@ -417,17 +417,7 @@ package_wxwidgets3.3-qt-git() {
   pkgdesc="Qt 5.x implementation of wxWidgets API for GUI (mingw-w64)"
   provides=("${MINGW_PACKAGE_PREFIX}-wxqt${_wx_basever}" "${MINGW_PACKAGE_PREFIX}-wxWidgets${_wx_basever}")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxWidgets${_wx_basever}")
-  depends=(
-    "${MINGW_PACKAGE_PREFIX}-qt5-base"
-    "${MINGW_PACKAGE_PREFIX}-gcc-libs"
-    "${MINGW_PACKAGE_PREFIX}-expat"
-    "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
-    "${MINGW_PACKAGE_PREFIX}-libpng"
-    "${MINGW_PACKAGE_PREFIX}-libtiff"
-    "${MINGW_PACKAGE_PREFIX}-xz"
-    "${MINGW_PACKAGE_PREFIX}-zlib"
-    "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs"
-  )
+  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs")
   local MINGW_PREFIX_WIN=$(cygpath -am ${MINGW_PREFIX})
 
   cp --recursive "${srcdir}"/install-qt-${_build_suffix}-static${MINGW_PREFIX}/ ${pkgdir}/
@@ -475,6 +465,10 @@ package_wxwidgets3.3-qt-libs-git() {
   provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs")
   depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common-libs"
+           "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
+           "${MINGW_PACKAGE_PREFIX}-libpng"
+           "${MINGW_PACKAGE_PREFIX}-libtiff"
+           "${MINGW_PACKAGE_PREFIX}-gettext-runtime"
            "${MINGW_PACKAGE_PREFIX}-qt5-base")
 
   mkdir -p ${pkgdir}${MINGW_PREFIX}/bin
@@ -486,8 +480,10 @@ package_wxwidgets3.3-qt-libs-git() {
 package_wxwidgets3.3-common-libs-git() {
   pkgdesc="wxBase shared libraries for wxwidgets ${_wx_basever} (mingw-w64)"
   depends=("${MINGW_PACKAGE_PREFIX}-expat"
+           "${MINGW_PACKAGE_PREFIX}-gcc-libs"
            "${MINGW_PACKAGE_PREFIX}-pcre2"
-           "${MINGW_PACKAGE_PREFIX}-libsecret")
+           "${MINGW_PACKAGE_PREFIX}-libsecret"
+           "${MINGW_PACKAGE_PREFIX}-zlib")
   provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common-libs")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common-libs")
 
