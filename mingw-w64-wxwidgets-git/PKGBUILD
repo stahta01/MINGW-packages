@@ -42,7 +42,7 @@ makedepends=(
   $([[ "$_build_gtk3" == "yes" && "$MSYSTEM_CARCH" != "i686" ]] && echo "${MINGW_PACKAGE_PREFIX}-libnotify")
   $([[ "$_build_gtk3" == "yes" && "$MSYSTEM_CARCH" != "i686" ]] && echo "${MINGW_PACKAGE_PREFIX}-gtk3")
   $([[ "$_build_gtk3" == "yes" && "$MSYSTEM_CARCH" != "i686" ]] && echo "${MINGW_PACKAGE_PREFIX}-gspell")
-  $([[ "$_build_gtk3" == "yes" || "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-pkg-config")
+  $([[ "$_build_gtk3" == "yes" || "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-pkgconf")
   $([[ "$_build_qt"   == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-qt5-base")
   "${MINGW_PACKAGE_PREFIX}-libpng"
   "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
