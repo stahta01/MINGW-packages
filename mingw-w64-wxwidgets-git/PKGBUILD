@@ -415,8 +415,8 @@ check() {
 
 package_wxwidgets3.3-qt-git() {
   pkgdesc="Qt 5.x implementation of wxWidgets API for GUI (mingw-w64)"
-  provides=("${MINGW_PACKAGE_PREFIX}-wxqt${_wx_basever}" "${MINGW_PACKAGE_PREFIX}-wxWidgets${_wx_basever}")
-  conflicts=("${MINGW_PACKAGE_PREFIX}-wxWidgets${_wx_basever}")
+  provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-wxWidgets${_wx_basever}-qt")
   depends=(
     "${MINGW_PACKAGE_PREFIX}-qt5-base"
     "${MINGW_PACKAGE_PREFIX}-gcc-libs"
@@ -554,6 +554,8 @@ package_wxwidgets3.3-msw-libs-git() {
 
 package_wxwidgets3.3-gtk3-git() {
   pkgdesc="GTK+3 implementation of wxWidgets ${_wx_basever} C++ GUI API (mingw-w64)"
+  provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3")
   depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3-libs"
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
 
