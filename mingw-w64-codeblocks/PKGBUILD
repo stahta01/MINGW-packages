@@ -16,6 +16,7 @@ msys2_references=(
   'archlinux: codeblocks'
 )
 license=('spdx:GPL-3.0-or-later')
+provides=("${MINGW_PACKAGE_PREFIX}-${_realname}-wx${_wx_basever}")
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs"
          "${MINGW_PACKAGE_PREFIX}-drmingw"
          "${MINGW_PACKAGE_PREFIX}-hunspell"
