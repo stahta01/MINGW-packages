@@ -5,7 +5,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 _pkgver=3.3.10
 pkgver=${_pkgver//-/.}
-pkgrel=5
+pkgrel=6
 pkgdesc="A library for computing the discrete Fourier transform (DFT) (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -70,6 +70,7 @@ build() {
         -Wno-dev \
         -GNinja \
         ${_config_cmake} \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
         -DBUILD_SHARED_LIBS=ON \
         -DENABLE_OPENMP=ON \
@@ -81,7 +82,7 @@ build() {
     if [[ $CARCH != aarch64 ]]; then
       _config+="--enable-sse2 --enable-avx --enable-avx-128-fma --enable-avx2"
     fi
-    if [ $CARCH = x86_64 ]; then
+    if [[ $CARCH = x86_64 && $MSYSTEM != "MINGW32" ]]; then
       _config+=" --enable-avx512"
     fi
 
