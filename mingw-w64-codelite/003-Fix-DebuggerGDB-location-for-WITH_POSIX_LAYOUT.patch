@@ -1,0 +1,30 @@
+From 9650205538d86e3ab4ecf46faebb0e08a5103ba1 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Fri, 17 Oct 2025 08:14:07 -0400
+Subject: Fix DebuggerGDB location for WITH_POSIX_LAYOUT
+
+---
+ Debugger/CMakeLists.txt | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/Debugger/CMakeLists.txt b/Debugger/CMakeLists.txt
+index 67112176d..31f4da701 100644
+--- a/Debugger/CMakeLists.txt
++++ b/Debugger/CMakeLists.txt
+@@ -31,4 +31,12 @@ endif()
+ set_target_properties(${PLUGIN_NAME} PROPERTIES PREFIX "")
+ target_link_libraries(${PLUGIN_NAME} ${LINKER_OPTIONS} libcodelite plugin libgdbparser)
+ 
+-cl_install_debugger(${PLUGIN_NAME})
++if(MINGW AND WITH_POSIX_LAYOUT)
++    install(
++        TARGETS DebuggerGDB
++        RUNTIME DESTINATION ${PLUGINS_DIR}/debuggers
++        LIBRARY DESTINATION ${PLUGINS_DIR}/debuggers
++        ARCHIVE DESTINATION ${PLUGINS_DIR}/debuggers)
++else()
++    cl_install_debugger(${PLUGIN_NAME})
++endif()
+-- 
+2.48.1.windows.1
+

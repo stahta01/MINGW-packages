@@ -1,19 +1,21 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 # Contributor: Tim Stahlhut <stahta01@gmail.com>
 
-_wx_basever=3.0
+# See https://aur.archlinux.org/packages/codelite if trying to convert to not using git repo
+
+_wx_basever=3.2
 
 _realname=codelite
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=15.0
-pkgrel=5
+pkgver=18.2.0+c7.gaa1e9319b
+pkgrel=1
 pkgdesc="Open-source, cross platform IDE for the C/C++ programming languages (mingw-w64)"
 arch=('any')
-mingw_arch=()
-url="https://www.codelite.org/"
+mingw_arch=('ucrt64' 'clang64')
+url="https://codelite.org/"
 msys2_repository_url="https://github.com/eranif/codelite"
 license=('spdx:GPL-2.0-or-later')
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
@@ -24,65 +26,121 @@ depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
          "${MINGW_PACKAGE_PREFIX}-uchardet"
          "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs"
          "${MINGW_PACKAGE_PREFIX}-sqlite3"
+         "${MINGW_PACKAGE_PREFIX}-clang-tools-extra"
+         "${MINGW_PACKAGE_PREFIX}-libmariadbclient"
+         "${MINGW_PACKAGE_PREFIX}-postgresql"
+         "${MINGW_PACKAGE_PREFIX}-openssl"
          )
-optdepends=("${MINGW_PACKAGE_PREFIX}-clang")
-makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
+optdepends=("${MINGW_PACKAGE_PREFIX}-clang: compiler")
+makedepends=('git' 'dos2unix' 'flex' 'bison'
+             "${MINGW_PACKAGE_PREFIX}-cc"
              "${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw"
              "${MINGW_PACKAGE_PREFIX}-boost"
              #"${MINGW_PACKAGE_PREFIX}-clang"
             )
-source=("https://github.com/eranif/codelite/archive/${pkgver}/${_realname}-${pkgver}.tar.gz"
-        001-include-winsock-header.patch
-        002-mingw-use-wx-manifests.patch
-        003-use-gnu-extensions.patch
-        004-windows-headers-conflict.patch
-        005-cl-15-fix-sqlite3-find-and-build.patch
-        006-proper-libraries-names-mingw.patch
+#_sourcedir=${_realname}-${pkgver}
+#source=("https://github.com/eranif/codelite/archive/${pkgver}/${_realname}-${pkgver}.tar.gz"
+_sourcedir=${_realname}-git
+source=("${_sourcedir}"::"git+https://github.com/eranif/codelite.git"
+		001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
+		002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
+		003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
+		004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
+		005-Add-MSys2-file-layout-support.patch
+		006-Guard-WXWIN-and-other-stuff-with-WITH_MSYS2_PKG_LAYO.patch
+        # No idea what this patch does or if it is needed
         007-strip-whitespaces-flags.patch
-        010-strange-conflicts.patch
-        011-backport-use-ToStdString.patch
-        013-fix-linking-libraries-names.patch
-        014-fix-link-dup-error.patch
-        015-remove-WXDLLIMPEXP_SDK-from-codelite_terminal.patch
-        016-mingw-Set-better-target-names.patch
-        017-unnest-StringHashOptionalCase-and-StringCompareOptio.patch)
-sha256sums=('9dd5679660a9d1a51186fcbb2d0d44655f0bc8bedeb2ee57b28c9776f139353f'
-            'f1babfd20f19c417d32392d7200950fec93ea27022ec1e377f7d4b89332df3da'
-            'cfac30a871df28c19330f0cc607ac57b64ae54896af22c0e189de4f76c0738b7'
-            'fbed169ac80a8679c3b5fadb2521a61745c98eebb65050a088d82240b0da37d5'
-            '7b8d62c0af7cce47de53be38f5b4e517b464e19f60785e9757bbe9340608928d'
-            '1430a6d08ea97b1e9d748f6f73a80fdfe3be2ec414588d9c0519ed84bccac66c'
-            '6208622ed2060fe399ccc9ec510507b2102809178a70d4cf7b17cd806cdc308d'
+        008-Reduce-Clang-compiler-warnings-likely-wxWidgets-rela.patch
+		011-Add-include-of-cstdint.patch
+		012-Add-include-of-cstdint.patch
+		013-set-developer-log.patch
+        # 201 patch is from upstream repo
+        201-Add-include-of-cstdint.patch)
+sha256sums=('SKIP'
+            '3e85d07c26b09f549cd0ca365f6069306b7ba8c85cd232a3db3d47128d8df41e'
+            '1631a399c57466b849e38f7978756bcd9b1447a6caa2d1e6c4e0888c875b6739'
+            '6ce4c3d9bfec20358be1645cf4ebba095debfee1ed098af34ac244eed5b3014f'
+            '41a0a7d4509cc619d6035eb6c138a33dec1b557ca449e1fb16305f58d6011ae3'
+            '334ad8ff73855a0b158509e30fd2095947adac9401bae383597f1e2f55b5091a'
+            'b38ff43334b4ccefb26783b6e4b376438e1ba0ff283ea5a2fb6be3367694db9a'
             'a9e5539e31c664a84e42412cdd30b44699a92efb2fb6f51000010bb958c10219'
-            '5a6312aa0373587cf89e5a025fa81dc4f249a37db103e133a27bb15f4a611d1b'
-            '534ca3b9482ae01f240d50e6a3d57fbe000991e007b0d9f80f4e973b79ac2661'
-            'd1f58f6c7afcb13453004d56db32640427e214fe3c96faacbddd270e4f5137ed'
-            '73352c5718538f022407cec30b57e5805accd5f32dcabae2b431c68a64c0e418'
-            'd4f90a769e060c048cf4fb3fe907271fe22378fcdf0b82ec4969d77c2936045c'
-            'e9f37907e7ebb0199eae9f504c518f808486503357b8cf8c3ea22987bab05f3d'
-            '0b2aaa6b2432b937af6c5a585fe2dd8853315e5f96f993b35cee61a6ca65a320')
+            '3eebd94d9b785749ac16163d37949278758dabdb3a9919bcf61b17cc504ec32a'
+            '7ec4bb333bcc37f2761f32b37e5b54cdd35bfc24bda45eec93bc3244157f399b'
+            '9a986435f98af1534d2e3f1009a81baaed94afdcb3d23d2ec139dcf4ce7a4259'
+            '191017e45672f6945db79f1e67844d10df622e894d64afebad6937fbbc8e8412'
+            '9255590950242fd0870e0dd6d8771ee367a49563b95e6b2f7ff4eeadb721baf6')
+
+# Helper macros to help make tasks easier #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+    if patch --dry-run -Rbp1 -i "${srcdir}/${_patch}" > /dev/null 2>&1 ; then
+      msg2 "Skipping ${_patch} because it likely was already applied"
+    else
+      msg2 "Applying ${_patch}"
+      patch -Nbp1 -i "${srcdir}/${_patch}"
+    fi
+  done
+}
+
+# Declare global variables; begin with underscore to avoid name conflicts
+_git_base_commit=
+
+pkgver() {
+  cd "${srcdir}/${_sourcedir}"
+  local _version=$(head -n 200 CMakeLists.txt | grep 'set(CODELITE_VERSION' | sed -e 's/.* //' | tr '\n' '.' | sed -e 's/\"//g' | sed -e 's/[)]//g' | sed 's/.$/\n/')
+
+  printf "%s+c%s.g%s" ${_version} $(git rev-list --count ${_git_base_commit}..HEAD) $(git rev-parse --short ${_git_base_commit})
+}
 
 prepare() {
-  cd "${srcdir}/${_realname}-${pkgver}"
-  patch -p1 -i "${srcdir}"/001-include-winsock-header.patch
-  patch -p1 -i "${srcdir}"/002-mingw-use-wx-manifests.patch
-  patch -p1 -i "${srcdir}"/003-use-gnu-extensions.patch
-  patch -p1 -i "${srcdir}"/004-windows-headers-conflict.patch
-  patch -p1 -i "${srcdir}"/005-cl-15-fix-sqlite3-find-and-build.patch
-  patch -p1 -i "${srcdir}"/006-proper-libraries-names-mingw.patch
-  patch -p1 -i "${srcdir}"/007-strip-whitespaces-flags.patch
-  #patch -p1 -i "${srcdir}"/010-strange-conflicts.patch
-  patch -p1 -i "${srcdir}"/011-backport-use-ToStdString.patch
-  patch -p1 -i "${srcdir}"/013-fix-linking-libraries-names.patch
-  patch -p1 -i "${srcdir}"/014-fix-link-dup-error.patch
-  patch -p1 -i "${srcdir}"/015-remove-WXDLLIMPEXP_SDK-from-codelite_terminal.patch
-  patch -p1 -i "${srcdir}"/016-mingw-Set-better-target-names.patch
-  patch -p1 -i "${srcdir}"/017-unnest-StringHashOptionalCase-and-StringCompareOptio.patch
+  cd "${srcdir}/${_sourcedir}"
+
+  _git_base_commit=$(git rev-parse HEAD)
+
+  GIT_AM="git am --committer-date-is-author-date"
+  git config --local user.name  "nobody"
+  git config --local user.email "nobody@example.com"
+
+  git submodule update --init --recursive
+
+  # Work around the issue of the tinyjson folder being empty (reason commit is missing)
+  cd "${srcdir}/${_sourcedir}"/submodules/cc-wrapper && git clone https://github.com/eranif/tinyjson || true
+  cd "${srcdir}/${_sourcedir}"
+
+  git am --abort || true
+
+  ${GIT_AM} "${srcdir}"/001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
+  ${GIT_AM} "${srcdir}"/002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
+  ${GIT_AM} "${srcdir}"/003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
+  ${GIT_AM} "${srcdir}"/004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
+  ${GIT_AM} "${srcdir}"/005-Add-MSys2-file-layout-support.patch
+  ${GIT_AM} "${srcdir}"/006-Guard-WXWIN-and-other-stuff-with-WITH_MSYS2_PKG_LAYO.patch
+  ${GIT_AM} "${srcdir}"/008-Reduce-Clang-compiler-warnings-likely-wxWidgets-rela.patch
+  #apply_patch_with_msg 012-Add-include-of-cstdint.patch
+
+  # Results in more data being placed in codelite.log under %APPDATA%/codelite/logs
+  # Useful to find startup problems and likely other problems
+  # Once the program works correctly it would likely be a good idea to stop applying it.
+  apply_patch_with_msg 013-set-developer-log.patch
+
+  ## File has CRLF in it
+  #dos2unix LiteEditor/cl_editor.h
+  #apply_patch_with_msg 011-Add-include-of-cstdint.patch
+
+  # No idea if 007-strip-whitespaces-flags.patch is needed
+  apply_patch_with_msg \
+    007-strip-whitespaces-flags.patch
+
+  cd "${srcdir}/${_sourcedir}/submodules/yaml-cpp"
+  apply_patch_with_msg 201-Add-include-of-cstdint.patch
 }
 
 build() {
-  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
+  [[ -d ${srcdir}/build-${MSYSTEM} ]] && rm -rf ${srcdir}/build-${MSYSTEM}
+  [[ -f ${srcdir}/build-${MSYSTEM}/CMakeCache.txt ]] && rm -f ${srcdir}/build-${MSYSTEM}/CMakeCache.txt
+  mkdir -p ${srcdir}/build-${MSYSTEM} && cd ${srcdir}/build-${MSYSTEM}
 
   local -a extra_config
   if check_option "debug" "y"; then
@@ -91,21 +149,19 @@ build() {
     extra_config+=( -DCMAKE_BUILD_TYPE=Release )
   fi
 
-  # disables the part of urlmon.h that defines IsLoggingEnabled
-  # This replaces 010-strange-conflicts.patch
-  CXXFLAGS+=" -D_HITLOGGING_DEFINED=0"
-
   MSYS2_ARG_CONV_EXCL="-DCL_PREFIX=" \
   ${MINGW_PREFIX}/bin/cmake \
     -Wno-dev \
     -G"MSYS Makefiles" \
     -DCL_PREFIX=${MINGW_PREFIX} \
-    -DENABLE_CLANG=1 \
-    -DWITH_WEBVIEW=1 \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -DWITH_POSIX_LAYOUT=1 \
+    -DWITH_MSYS2_PKG_LAYOUT=1 \
+    -DWITH_MSYS2_PKG_LAYOUT=1 \
     -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
     -DwxWidgets_wxrc_EXECUTABLE=${MINGW_PREFIX}/bin/wxrc-${_wx_basever} \
     "${extra_config[@]}" \
-    ../${_realname}-${pkgver}
+    ../${_sourcedir}
 
   ${MINGW_PREFIX}/bin/cmake --build .
 }
@@ -115,7 +171,7 @@ package() {
 
   DESTDIR="${pkgdir}" ${MINGW_PREFIX}/bin/cmake --install .
 
-  install -Dm644 "${srcdir}"/${_realname}-${pkgver}/LICENSE "${pkgdir}"${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE
+  install -Dm644 "${srcdir}"/${_sourcedir}/LICENSE "${pkgdir}"${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE
 
   # why?
   rm -f "${pkgdir}"${MINGW_PREFIX}/lib/codelite/*.a
