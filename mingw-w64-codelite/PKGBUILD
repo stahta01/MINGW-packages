@@ -10,7 +10,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=18.2.0+c0.gad5ccd1a8
+pkgver=18.2.0+c3.g9f948c1a2
 pkgrel=1
 pkgdesc="Open-source, cross platform IDE for the C/C++ programming languages (mingw-w64)"
 arch=('any')
@@ -30,7 +30,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
          "${MINGW_PACKAGE_PREFIX}-libmariadbclient"
          )
 optdepends=("${MINGW_PACKAGE_PREFIX}-clang: compiler")
-makedepends=('git'
+makedepends=('git' 'dos2unix'
              "${MINGW_PACKAGE_PREFIX}-cc"
              "${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw"
@@ -108,25 +108,25 @@ prepare() {
   cd "${srcdir}/${_sourcedir}"/submodules/cc-wrapper && git clone https://github.com/eranif/tinyjson || true
   cd "${srcdir}/${_sourcedir}"
 
-  #git am --abort
+  git am --abort || true
 
-  ${GIT_AM} "${srcdir}"/001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
-  ${GIT_AM} "${srcdir}"/002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
-  ${GIT_AM} "${srcdir}"/003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
-  ${GIT_AM} "${srcdir}"/004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
+  #${GIT_AM} "${srcdir}"/001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
+  #${GIT_AM} "${srcdir}"/002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
+  #${GIT_AM} "${srcdir}"/003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
+  #${GIT_AM} "${srcdir}"/004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
   ${GIT_AM} "${srcdir}"/005-Add-MSys2-file-layout-support.patch
   ${GIT_AM} "${srcdir}"/006-Guard-WXWIN-and-other-stuff-with-WITH_MSYS2_PKG_LAYO.patch
   ${GIT_AM} "${srcdir}"/008-Reduce-Clang-compiler-warnings-likely-wxWidgets-rela.patch
-  ${GIT_AM} "${srcdir}"/012-Add-include-of-cstdint.patch
+  #${GIT_AM} "${srcdir}"/012-Add-include-of-cstdint.patch
 
   # Results in more data being placed in codelite.log under %APPDATA%/codelite/logs
   # Useful to find startup problems and likely other problems
   # Once the program works correctly it would likely be a good idea to stop applying it.
   apply_patch_with_msg 013-set-developer-log.patch
 
-  # File has CRLF in it
-  dos2unix LiteEditor/cl_editor.h
-  apply_patch_with_msg 011-Add-include-of-cstdint.patch
+  ## File has CRLF in it
+  #dos2unix LiteEditor/cl_editor.h
+  #apply_patch_with_msg 011-Add-include-of-cstdint.patch
 
   # No idea if 007-strip-whitespaces-flags.patch is needed
   apply_patch_with_msg \
