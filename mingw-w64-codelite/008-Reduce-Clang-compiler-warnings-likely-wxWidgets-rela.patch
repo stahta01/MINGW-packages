@@ -1,0 +1,26 @@
+From 507febbf9b2a0bf55c97272017d435b71799d2d8 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 19 Oct 2025 07:57:56 -0400
+Subject: Reduce Clang compiler warnings likely wxWidgets related
+
+---
+ CMakeLists.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a9164f20d..b2964fafd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -187,6 +187,9 @@ write_file("${CMAKE_BINARY_DIR}/post_install.cmake"
+ 
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations"
+ )# Avoid very multiple warnings spam due to deprecated wx methods
++if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
++    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
++endif()
+ if(UNIX AND NOT APPLE)
+   set(CMAKE_CXX_FLAGS
+       "${CMAKE_CXX_FLAGS} -isystem /usr/include/harfbuzz -isystem /usr/local/include/harfbuzz"
+-- 
+2.48.1.windows.1
+

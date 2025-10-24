@@ -1,0 +1,89 @@
+From 5d4041646b2fb4f0ca0f625dbc6f73e158186194 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Tue, 21 Oct 2025 15:55:35 -0400
+Subject: Add MSys2 file layout support
+
+---
+ CMakeLists.txt                 | 11 ++++++++++-
+ CodeLite/cl_standard_paths.cpp | 12 ++++++++++--
+ codelitephp/CMakeLists.txt     |  2 +-
+ 3 files changed, 21 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 04bd99cac..e8d986643 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -346,10 +346,14 @@ if(APPLE)
+       ${CMAKE_BINARY_DIR}/codelite.app/Contents/SharedSupport/plugins)
+   set(CL_INSTALL_BIN ${CMAKE_BINARY_DIR}/codelite.app/Contents/MacOS)
+   set(CL_RESOURCES_DIR ${CMAKE_BINARY_DIR}/codelite.app/Contents/SharedSupport)
+-elseif(MINGW)
++elseif(MINGW AND NOT WITH_MSYS2_FILE_LAYOUT)
+   set(PLUGINS_DIR "${MINGW_INSTALL_PLUGINS_DIR}")
+   set(CL_INSTALL_BIN "${MINGW_INSTALL_BIN}")
+   set(CL_RESOURCES_DIR "${MINGW_INSTALL_BIN}")
++elseif(MINGW AND WITH_MSYS2_FILE_LAYOUT)
++  set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/plugins")
++  set(CL_INSTALL_BIN "${CMAKE_INSTALL_PREFIX}/bin")
++  set(CL_RESOURCES_DIR "${CL_INSTALL_BIN}")
+ else()
+   # /usr/lib/codelite
+   set(PLUGINS_DIR "${CL_PREFIX}/${CL_INSTALL_LIBDIR}/codelite")
+@@ -582,6 +586,11 @@ if(NOT MINGW)
+   add_compile_definitions(PLUGINS_DIR=\"${PLUGINS_DIR}\")
+ else()
+   if(WITH_POSIX_LAYOUT)
++    if(WITH_MSYS2_FILE_LAYOUT)
++      add_compile_definitions(INSTALL_DIR=\"${CL_PREFIX}/share/codelite\")
++      add_compile_definitions(PREFIX_DIR=\"${CL_PREFIX}\")
++      add_compile_definitions(WITH_MSYS2_FILE_LAYOUT)
++    endif()
+     add_compile_definitions(PLUGINS_DIR=\"${PLUGINS_DIR}\")
+     add_compile_definitions(NDEBUG)
+     add_compile_definitions(USE_POSIX_LAYOUT)
+diff --git a/CodeLite/cl_standard_paths.cpp b/CodeLite/cl_standard_paths.cpp
+index 09a46e4eb..f8ccb11b9 100644
+--- a/CodeLite/cl_standard_paths.cpp
++++ b/CodeLite/cl_standard_paths.cpp
+@@ -165,7 +165,11 @@ wxString clStandardPaths::GetDataDir() const
+     }
+ 
+ #ifdef USE_POSIX_LAYOUT
+-    wxFileName path(wxStandardPaths::Get().GetDataDir() + wxT(INSTALL_DIR), "");
++    #ifdef WITH_MSYS2_FILE_LAYOUT
++        wxFileName path(wxT(INSTALL_DIR), "");
++    #else
++        wxFileName path(wxStandardPaths::Get().GetDataDir() + wxT(INSTALL_DIR), "");
++    #endif
+     return path.GetPath();
+ #else
+     return wxStandardPaths::Get().GetDataDir();
+@@ -265,7 +269,11 @@ wxString clStandardPaths::GetInstallDir() const
+     return GetBinFolder();
+ #else
+ #ifdef USE_POSIX_LAYOUT
+-    wxFileName path(wxStandardPaths::Get().GetDataDir(), "");
++    #ifdef WITH_MSYS2_FILE_LAYOUT
++        wxFileName path(PREFIX_DIR, "");
++    #else
++        wxFileName path(wxStandardPaths::Get().GetDataDir(), "");
++    #endif
+     return path.GetPath();
+ #else
+     return GetBinFolder();
+diff --git a/codelitephp/CMakeLists.txt b/codelitephp/CMakeLists.txt
+index 6e3ec9afc..bbfcbe653 100644
+--- a/codelitephp/CMakeLists.txt
++++ b/codelitephp/CMakeLists.txt
+@@ -2,7 +2,7 @@ project("codelitephp")
+ # set the plugin name here
+ set(PLUGIN_NAME "codelitephp")
+ 
+-if(NOT MINGW)
++if(WITH_MSYS2_FILE_LAYOUT OR NOT MINGW)
+     add_compile_definitions(PLUGINS_DIR=\"${PLUGINS_DIR}\")
+ endif()
+ 
+-- 
+2.48.1.windows.1
+
