@@ -1,21 +1,21 @@
-From 9f948c1a2dd35cc31efccb6bd63b54282220d9ff Mon Sep 17 00:00:00 2001
+From c11775724016ab6f3beff61a0dfab6ac28d35052 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Sat, 18 Oct 2025 11:36:39 -0400
 Subject: Replace "CMAKE_INSTALL_PREFIX" with "CL_INSTALL_BIN"
 
 ---
  CMakeLists.txt                  | 10 +++++-----
- CodeLite/CMakeLists.txt         |  6 +++---
+ CodeLite/CMakeLists.txt         |  4 ++--
  DatabaseExplorer/CMakeLists.txt |  8 ++++----
- Plugin/CMakeLists.txt           |  6 +++---
- sdk/wxsqlite3/CMakeLists.txt    |  6 +++---
- 5 files changed, 18 insertions(+), 18 deletions(-)
+ Plugin/CMakeLists.txt           |  4 ++--
+ sdk/wxsqlite3/CMakeLists.txt    |  4 ++--
+ 5 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index b33ee6f6a..04bd99cac 100644
+index 240a0d57b..8d53c4e1e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1194,16 +1194,16 @@ if(MINGW)
+@@ -1246,16 +1246,16 @@ if(MINGW)
  
    foreach(DLL ${SYSTEM_DLLS})
      install(FILES "${MSYS2_BASE}/clang64/bin/${DLL}"
@@ -35,7 +35,7 @@ index b33ee6f6a..04bd99cac 100644
    endforeach()
  
    foreach(RESOURCE ${CODELITE_RESOURCES})
-@@ -1212,11 +1212,11 @@ if(MINGW)
+@@ -1264,11 +1264,11 @@ if(MINGW)
  
    # copy extra deps dlls
    foreach(DLL ${LIBHUNSPELL_DEPS})
@@ -48,24 +48,22 @@ index b33ee6f6a..04bd99cac 100644
 +    install(FILES "${DLL}" DESTINATION "${CL_INSTALL_BIN}")
    endforeach()
  
- endif()
+   foreach(DLL ${OPENSSL_DEPS})
 diff --git a/CodeLite/CMakeLists.txt b/CodeLite/CMakeLists.txt
-index 4731e147e..4d111d40e 100644
+index 4731e147e..73cf4af0f 100644
 --- a/CodeLite/CMakeLists.txt
 +++ b/CodeLite/CMakeLists.txt
-@@ -132,9 +132,9 @@ if(NOT MINGW)
+@@ -132,8 +132,8 @@ if(NOT MINGW)
  else()
    install(
      TARGETS libcodelite
 -    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
 -    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}
--    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 +    RUNTIME DESTINATION ${CL_INSTALL_BIN}
 +    LIBRARY DESTINATION ${CL_INSTALL_BIN}
-+    ARCHIVE DESTINATION ${CL_INSTALL_BIN}/lib)
+     ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
  endif()
  
- target_compile_options(libcodelite PUBLIC -Wall)
 diff --git a/DatabaseExplorer/CMakeLists.txt b/DatabaseExplorer/CMakeLists.txt
 index 306a645e4..f0d5fea50 100644
 --- a/DatabaseExplorer/CMakeLists.txt
@@ -97,22 +95,21 @@ index 306a645e4..f0d5fea50 100644
      endif()
  endif()
 diff --git a/Plugin/CMakeLists.txt b/Plugin/CMakeLists.txt
-index 42161988b..d1503b4d7 100644
+index 95e75dda4..c1d1829b8 100644
 --- a/Plugin/CMakeLists.txt
 +++ b/Plugin/CMakeLists.txt
-@@ -111,7 +111,7 @@ if(NOT MINGW)
+@@ -113,7 +113,7 @@ if(NOT MINGW)
  else()
    install(
      TARGETS plugin
 -    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
 -    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}
--    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 +    RUNTIME DESTINATION ${CL_INSTALL_BIN}
 +    LIBRARY DESTINATION ${CL_INSTALL_BIN}
-+    ARCHIVE DESTINATION ${CL_INSTALL_BIN}/lib)
+     ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
  endif()
 diff --git a/sdk/wxsqlite3/CMakeLists.txt b/sdk/wxsqlite3/CMakeLists.txt
-index 3c260431f..80115dd72 100644
+index 3c260431f..6cf701365 100644
 --- a/sdk/wxsqlite3/CMakeLists.txt
 +++ b/sdk/wxsqlite3/CMakeLists.txt
 @@ -40,7 +40,7 @@ if(NOT MINGW)
@@ -121,10 +118,9 @@ index 3c260431f..80115dd72 100644
          TARGETS wxsqlite3
 -        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
 -        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}
--        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 +        RUNTIME DESTINATION ${CL_INSTALL_BIN}
 +        LIBRARY DESTINATION ${CL_INSTALL_BIN}
-+        ARCHIVE DESTINATION ${CL_INSTALL_BIN}/lib)
+         ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
  endif()
 -- 
 2.48.1.windows.1

@@ -1,7 +1,7 @@
-From f172d59655243e6f37f0270ef4f37df508b8ed0b Mon Sep 17 00:00:00 2001
+From f0169381ea6d48f8e479533d95f1a1151554d530 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Sun, 19 Oct 2025 06:14:37 -0400
-Subject: Guard WXWIN and other stuff with WITH_MSYS2_PKG_LAYOUT
+Subject: Guard WXWIN and other stuff with FOR_MSYS2_PACKAGE
 
 ---
  CMakeLists.txt                  | 18 ++++++++++--------
@@ -11,7 +11,7 @@ Subject: Guard WXWIN and other stuff with WITH_MSYS2_PKG_LAYOUT
  4 files changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e8d986643..a9164f20d 100644
+index a4131647e..b8f36c4f8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -78,13 +78,15 @@ endif()
@@ -23,7 +23,7 @@ index e8d986643..a9164f20d 100644
 -      FATAL_ERROR
 -        "Set the environment variable MSYS2_BASE to point to the installation of your MSYS2. e.g. export MSYS2_BASE=C:/msys64"
 -    )
-+  if(NOT WITH_MSYS2_PKG_LAYOUT)
++  if(NOT FOR_MSYS2_PACKAGE)
 +    if(NOT DEFINED ENV{MSYS2_BASE})
 +      message(
 +        FATAL_ERROR
@@ -36,26 +36,26 @@ index e8d986643..a9164f20d 100644
  elseif(UNIX AND NOT APPLE)
    if(CL_PREFIX)
      # user provided CL_PREFIX -> use it instead of CMAKE_INSTALL_PREFIX
-@@ -475,7 +477,7 @@ if(UNIX AND NOT APPLE)
+@@ -496,7 +498,7 @@ if(UNIX AND NOT APPLE)
  endif(UNIX AND NOT APPLE)
  
  # find wxWidgets once
 -if(MINGW)
-+if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++if(MINGW AND NOT FOR_MSYS2_PACKAGE)
    if(NOT WXWIN)
      message(FATAL_ERROR "Missing -DWXWIN=<wxWidgets/root/install/dir>")
    endif()
-@@ -1153,7 +1155,7 @@ if(NOT WXC_APP)
+@@ -1198,7 +1200,7 @@ if(NOT WXC_APP)
  
  endif()
  
 -if(MINGW)
-+if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++if(MINGW AND NOT FOR_MSYS2_PACKAGE)
    # determine MSYS2 path
    write_file(${CMAKE_BINARY_DIR}/msys2-environment "export WXWIN=${WXWIN}")
    write_file(${CMAKE_BINARY_DIR}/msys2-environment
 diff --git a/CodeFormatter/CMakeLists.txt b/CodeFormatter/CMakeLists.txt
-index 35443f1f5..5614f61a2 100644
+index 35443f1f5..d9331c834 100644
 --- a/CodeFormatter/CMakeLists.txt
 +++ b/CodeFormatter/CMakeLists.txt
 @@ -33,7 +33,7 @@ target_link_libraries(${PLUGIN_NAME} ${LINKER_OPTIONS} libcodelite plugin)
@@ -63,12 +63,12 @@ index 35443f1f5..5614f61a2 100644
  cl_install_plugin(${PLUGIN_NAME})
  
 -if(MINGW)
-+if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++if(MINGW AND NOT FOR_MSYS2_PACKAGE)
      # install clang-format
      msys_install_clang64_tool(clang-format.exe ${CL_INSTALL_BIN})
  endif()
 diff --git a/DatabaseExplorer/CMakeLists.txt b/DatabaseExplorer/CMakeLists.txt
-index f0d5fea50..979d725ae 100644
+index f0d5fea50..17f065041 100644
 --- a/DatabaseExplorer/CMakeLists.txt
 +++ b/DatabaseExplorer/CMakeLists.txt
 @@ -18,7 +18,7 @@ if(WITH_MYSQL)
@@ -76,7 +76,7 @@ index f0d5fea50..979d725ae 100644
      add_compile_definitions(DBL_USE_MYSQL=1)
  
 -    if(MINGW)
-+    if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++    if(MINGW AND NOT FOR_MSYS2_PACKAGE)
          install(FILES "${MSYS2_BASE}/clang64/bin/libmariadb.dll" DESTINATION "${CL_INSTALL_BIN}")
          msys_list_deps(${MSYS2_BASE}/clang64/bin/libmariadb.dll LIBMARIA_DEPS)
          foreach(DEP ${LIBMARIA_DEPS})
@@ -85,12 +85,12 @@ index f0d5fea50..979d725ae 100644
      add_compile_definitions(DBL_USE_POSTGRES=1)
  
 -    if(MINGW)
-+    if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++    if(MINGW AND NOT FOR_MSYS2_PACKAGE)
          install(FILES "${MSYS2_BASE}/clang64/bin/libpq.dll" DESTINATION "${CL_INSTALL_BIN}")
          msys_list_deps(${MSYS2_BASE}/clang64/bin/libpq.dll LIBPOSTGRES_DEPS)
          foreach(DEP ${LIBPOSTGRES_DEPS})
 diff --git a/LanguageServer/CMakeLists.txt b/LanguageServer/CMakeLists.txt
-index 0b6c27802..62abd14d0 100644
+index 0b6c27802..dee9919a2 100644
 --- a/LanguageServer/CMakeLists.txt
 +++ b/LanguageServer/CMakeLists.txt
 @@ -52,7 +52,7 @@ if(APPLE)
@@ -98,7 +98,7 @@ index 0b6c27802..62abd14d0 100644
  endif()
  
 -if(MINGW)
-+if(MINGW AND NOT WITH_MSYS2_PKG_LAYOUT)
++if(MINGW AND NOT FOR_MSYS2_PACKAGE)
      # install clangd
      msys_install_clang64_tool(clangd.exe ${CL_INSTALL_BIN})
  endif()

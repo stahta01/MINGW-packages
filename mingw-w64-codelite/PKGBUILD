@@ -10,7 +10,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=18.2.0+c7.gaa1e9319b
+pkgver=18.3.0+c4.g49a4bb179
 pkgrel=1
 pkgdesc="Open-source, cross platform IDE for the C/C++ programming languages (mingw-w64)"
 arch=('any')
@@ -43,27 +43,21 @@ makedepends=('git' 'dos2unix' 'flex' 'bison'
 #source=("https://github.com/eranif/codelite/archive/${pkgver}/${_realname}-${pkgver}.tar.gz"
 _sourcedir=${_realname}-git
 source=("${_sourcedir}"::"git+https://github.com/eranif/codelite.git"
-		001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
-		002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
-		003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
-		004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
-		005-Add-MSys2-file-layout-support.patch
-		006-Guard-WXWIN-and-other-stuff-with-WITH_MSYS2_PKG_LAYO.patch
+        004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
+        005-Extend-support-of-WITH_POSIX_LAYOUT.patch
+        006-Guard-WXWIN-and-other-stuff-with-FOR_MSYS2_PACKAGE.patch
         # No idea what this patch does or if it is needed
         007-strip-whitespaces-flags.patch
         008-Reduce-Clang-compiler-warnings-likely-wxWidgets-rela.patch
-		011-Add-include-of-cstdint.patch
-		012-Add-include-of-cstdint.patch
-		013-set-developer-log.patch
+        011-Add-include-of-cstdint.patch
+        012-Add-include-of-cstdint.patch
+        013-set-developer-log.patch
         # 201 patch is from upstream repo
         201-Add-include-of-cstdint.patch)
 sha256sums=('SKIP'
-            '3e85d07c26b09f549cd0ca365f6069306b7ba8c85cd232a3db3d47128d8df41e'
-            '1631a399c57466b849e38f7978756bcd9b1447a6caa2d1e6c4e0888c875b6739'
-            '6ce4c3d9bfec20358be1645cf4ebba095debfee1ed098af34ac244eed5b3014f'
-            '41a0a7d4509cc619d6035eb6c138a33dec1b557ca449e1fb16305f58d6011ae3'
-            '334ad8ff73855a0b158509e30fd2095947adac9401bae383597f1e2f55b5091a'
-            'b38ff43334b4ccefb26783b6e4b376438e1ba0ff283ea5a2fb6be3367694db9a'
+            '4c709706a98f530503e1a00081a0400829240ee3a4661aaa7e481179959d229a'
+            '44f494e7b3d35cad40c2698ff23f8bbe2182306061aed70f2dad4a7faa81fb3f'
+            '927248a77455f7a6e5ae1a52cfa78d4cba480208598803ef8c886986512734e1'
             'a9e5539e31c664a84e42412cdd30b44699a92efb2fb6f51000010bb958c10219'
             '3eebd94d9b785749ac16163d37949278758dabdb3a9919bcf61b17cc504ec32a'
             '7ec4bb333bcc37f2761f32b37e5b54cdd35bfc24bda45eec93bc3244157f399b'
@@ -111,12 +105,9 @@ prepare() {
 
   git am --abort || true
 
-  ${GIT_AM} "${srcdir}"/001-Fix-splashscreen-location-for-WITH_POSIX_LAYOUT.patch
-  ${GIT_AM} "${srcdir}"/002-Fix-MINGW_INSTALL_PLUGINS_DIR-location-for-WITH_POSI.patch
-  ${GIT_AM} "${srcdir}"/003-Fix-DebuggerGDB-location-for-WITH_POSIX_LAYOUT.patch
   ${GIT_AM} "${srcdir}"/004-Replace-CMAKE_INSTALL_PREFIX-with-CL_INSTALL_BIN.patch
-  ${GIT_AM} "${srcdir}"/005-Add-MSys2-file-layout-support.patch
-  ${GIT_AM} "${srcdir}"/006-Guard-WXWIN-and-other-stuff-with-WITH_MSYS2_PKG_LAYO.patch
+  ${GIT_AM} "${srcdir}"/005-Extend-support-of-WITH_POSIX_LAYOUT.patch
+  ${GIT_AM} "${srcdir}"/006-Guard-WXWIN-and-other-stuff-with-FOR_MSYS2_PACKAGE.patch
   ${GIT_AM} "${srcdir}"/008-Reduce-Clang-compiler-warnings-likely-wxWidgets-rela.patch
   #apply_patch_with_msg 012-Add-include-of-cstdint.patch
 
@@ -156,8 +147,7 @@ build() {
     -DCL_PREFIX=${MINGW_PREFIX} \
     -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DWITH_POSIX_LAYOUT=1 \
-    -DWITH_MSYS2_PKG_LAYOUT=1 \
-    -DWITH_MSYS2_PKG_LAYOUT=1 \
+    -DFOR_MSYS2_PACKAGE=1 \
     -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
     -DwxWidgets_wxrc_EXECUTABLE=${MINGW_PREFIX}/bin/wxrc-${_wx_basever} \
     "${extra_config[@]}" \
