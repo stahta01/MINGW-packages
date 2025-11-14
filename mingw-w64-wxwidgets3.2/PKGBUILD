@@ -15,8 +15,11 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common"
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3-libs")
          $([[ ${MSYSTEM_CARCH} == i686 ]] || echo \
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3")
-         "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs"
-         "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt")
+         $([[ ${MSYSTEM_CARCH} == i686 ]] || echo \
+           "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs")
+         $([[ ${MSYSTEM_CARCH} == i686 ]] || echo \
+           "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt")
+)
 pkgver=${_wx_basever}.8.1
 pkgrel=7
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
@@ -227,13 +230,13 @@ package_wxwidgets3.2-common() {
   cp -a --recursive "${srcdir}/install-msw-${MSYSTEM}-shared${MINGW_PREFIX}/share/" \
       "${pkgdir}"${MINGW_PREFIX}/
 
-  mkdir -p "${pkgdir}"${MINGW_PREFIX}/include
-  cp -a --recursive "${srcdir}/install-qt-${MSYSTEM}-shared${MINGW_PREFIX}/include/" \
-      "${pkgdir}"${MINGW_PREFIX}/
+  #mkdir -p "${pkgdir}"${MINGW_PREFIX}/include
+  #cp -a --recursive "${srcdir}/install-qt-${MSYSTEM}-shared${MINGW_PREFIX}/include/" \
+      #"${pkgdir}"${MINGW_PREFIX}/
 
-  mkdir -p "${pkgdir}"${MINGW_PREFIX}/include
-  cp -a --recursive "${srcdir}/install-gtk3-${MSYSTEM}-shared${MINGW_PREFIX}/include/" \
-      "${pkgdir}"${MINGW_PREFIX}/
+  #mkdir -p "${pkgdir}"${MINGW_PREFIX}/include
+  #cp -a --recursive "${srcdir}/install-gtk3-${MSYSTEM}-shared${MINGW_PREFIX}/include/" \
+      #"${pkgdir}"${MINGW_PREFIX}/
 
   mkdir -p "${pkgdir}"${MINGW_PREFIX}/include
   cp -a --recursive "${srcdir}/install-msw-${MSYSTEM}-shared${MINGW_PREFIX}/include/" \
@@ -246,9 +249,9 @@ package_wxwidgets3.2-common() {
     -t "${pkgdir}"${MINGW_PREFIX}/share/aclocal
 
   mkdir -p "${pkgdir}"${MINGW_PREFIX}/lib
-  cp -a "${srcdir}"/install-qt-${MSYSTEM}-shared${MINGW_PREFIX}/lib/*.a  "${pkgdir}"${MINGW_PREFIX}/lib/
-  cp -a "${srcdir}"/install-gtk3-${MSYSTEM}-static${MINGW_PREFIX}/lib/*.a "${pkgdir}"${MINGW_PREFIX}/lib/
-  cp -a "${srcdir}"/install-gtk3-${MSYSTEM}-shared${MINGW_PREFIX}/lib/*.a "${pkgdir}"${MINGW_PREFIX}/lib/
+  #cp -a "${srcdir}"/install-qt-${MSYSTEM}-shared${MINGW_PREFIX}/lib/*.a  "${pkgdir}"${MINGW_PREFIX}/lib/
+  #cp -a "${srcdir}"/install-gtk3-${MSYSTEM}-static${MINGW_PREFIX}/lib/*.a "${pkgdir}"${MINGW_PREFIX}/lib/
+  #cp -a "${srcdir}"/install-gtk3-${MSYSTEM}-shared${MINGW_PREFIX}/lib/*.a "${pkgdir}"${MINGW_PREFIX}/lib/
   cp -a "${srcdir}"/install-msw-${MSYSTEM}-static${MINGW_PREFIX}/lib/*.a  "${pkgdir}"${MINGW_PREFIX}/lib/
   cp -a "${srcdir}"/install-msw-${MSYSTEM}-shared${MINGW_PREFIX}/lib/*.a  "${pkgdir}"${MINGW_PREFIX}/lib/
 }
