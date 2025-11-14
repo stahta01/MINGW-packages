@@ -163,7 +163,7 @@ build() {
 
   CXXFLAGS+=" -Wno-ignored-attributes -Wno-enum-compare-switch -Wno-deprecated-declarations"
 
-  for _toolkit in msw gtk3 qt; do
+  for _toolkit in msw; do
     for _libtype in shared static; do
 
       if [[ ${_toolkit} == qt && ${_libtype} == static ]]; then
