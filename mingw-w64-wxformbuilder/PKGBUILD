@@ -1,0 +1,60 @@
+_wx_basever=3.2
+
+_realname=wxformbuilder
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgbase=mingw-w64-${_realname}
+pkgver=4.2.1
+pkgrel=1
+pkgdesc="RAD tool for wxWidgets GUI design"
+arch=('any')
+mingw_arch=('ucrt64')
+url="https://github.com/wxFormBuilder/wxFormBuilder"
+license=('GPL2')
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
+depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs" "${MINGW_PACKAGE_PREFIX}-boost")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake" "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw")
+_sourcedir="wxFormBuilder-${pkgver}"
+source=(
+  "https://github.com/wxFormBuilder/wxFormBuilder/releases/download/v${pkgver}/wxFormBuilder-${pkgver}-source-full.tar.gz"
+  '001-Add-FOR_MSYS2_PACKAGE-build-option.patch'
+)
+sha512sums=('d055f7cb2a90c8cb91370ffc38275b452de2975b0d834a040a6b0f2b733af8d9a7160a3c115d8c90ee7958be642345436e4546307970f22219bce5ca1b007a09'
+            '808d8875cba219e6112e7b1f9f631139c46735ed63c7faf2ce55326e66dbe3b7402ba8bf206419dcc099c29861e995431b7ce93b1c9e4046cb19465528b29af0')
+
+# Helper macros to help make tasks easier #
+apply_patch_with_msg() {
+  for _patch in "$@"
+  do
+      msg2 "Applying ${_patch}"
+      patch -Nbp1 -i "${srcdir}/${_patch}"
+  done
+}
+
+prepare() {
+  cd "${srcdir}/${_sourcedir}"
+
+  apply_patch_with_msg 001-Add-FOR_MSYS2_PACKAGE-build-option.patch
+}
+
+build() {
+  cd "${_sourcedir}"
+
+  [[ -d ./_build-${MSYSTEM} ]] && rm -rf ./_build-${MSYSTEM}
+  mkdir -p ./_build-${MSYSTEM}
+
+  ${MINGW_PREFIX}/bin/cmake.exe \
+    -G'Ninja' \
+    -DWXFB_STAGE_BUILD=OFF \
+    -DFOR_MSYS2_PACKAGE=1 \
+    -S . -B _build-${MSYSTEM} -DCMAKE_BUILD_TYPE=Release
+  ${MINGW_PREFIX}/bin/cmake --build _build-${MSYSTEM} --config Release
+  ${MINGW_PREFIX}/bin/cmake --install _build-${MSYSTEM} --config Release
+}
+
+package() {
+  cd "${_sourcedir}"
+
+  mkdir -p "${pkgdir}"${MINGW_PREFIX}
+  cp -r ./_build-${MSYSTEM}/install/* "${pkgdir}"${MINGW_PREFIX}/
+  rm -f "${pkgdir}"${MINGW_PREFIX}/bin/*.dll
+}

@@ -1,0 +1,55 @@
+From bbfbd32e9649f58ba0c967332181ed01e776d6dd Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Thu, 13 Nov 2025 12:13:31 -0500
+Subject: Add "FOR_MSYS2_PACKAGE" build option
+
+---
+ CMakeLists.txt  | 8 +++++++-
+ src/maingui.cpp | 8 ++++++++
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5bcb0cc4..f8530308 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,7 +33,13 @@ set(WXFB_GENERATOR_LANGUAGES cpp python lua php CACHE INTERNAL "")
+ 
+ # Adjust paths to match wxStandardPaths implementation, use own cache variables to share across CMake scopes
+ include(GNUInstallDirs)
+-if(WIN32)
++if(FOR_MSYS2_PACKAGE)
++  add_compile_definitions(FOR_MSYS2_PACKAGE)
++  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
++  set(WXFB_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin CACHE INTERNAL "")
++  set(WXFB_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/bin CACHE INTERNAL "")
++  set(WXFB_INSTALL_DATADIR ${CMAKE_INSTALL_PREFIX}/share/wxformbuilder CACHE INTERNAL "")
++elseif(WIN32)
+   set(WXFB_INSTALL_BINDIR . CACHE INTERNAL "")
+   set(WXFB_INSTALL_LIBDIR . CACHE INTERNAL "")
+   set(WXFB_INSTALL_DATADIR . CACHE INTERNAL "")
+diff --git a/src/maingui.cpp b/src/maingui.cpp
+index 89f5b619..9add07e6 100644
+--- a/src/maingui.cpp
++++ b/src/maingui.cpp
+@@ -109,6 +109,13 @@ int MyApp::OnRun()
+     delete wxConfigBase::Set(new wxConfig(wxT("wxFormBuilder")));
+ 
+     // Get the data directory
++#if defined(FOR_MSYS2_PACKAGE)
++    wxFileName execfpath(wxStandardPaths::Get().GetExecutablePath());
++    if (execfpath.GetDirs().Last().IsSameAs("bin")) {
++        execfpath.RemoveLastDir();
++    }
++    wxString dataDir = execfpath.GetPath() + wxT("/share/wxformbuilder");
++#else
+     auto& stdPaths = wxStandardPaths::Get();
+ #if defined(__WINDOWS__)
+     // The CMake stage build roots the whole directory structure at the build directory
+@@ -117,6 +124,7 @@ int MyApp::OnRun()
+ #endif
+     wxString dataDir = stdPaths.GetDataDir();
+     dataDir.Replace(GetAppName(), wxT("wxformbuilder"));
++#endif
+ 
+     // Log to stderr while working on the command line
+     delete wxLog::SetActiveTarget(new wxLogStderr);
+-- 
