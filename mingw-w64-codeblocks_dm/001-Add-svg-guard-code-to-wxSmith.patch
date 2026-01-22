@@ -1,0 +1,153 @@
+From 784a02fc146d4f1dfb8d259e66e6b99e4667f877 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Wed, 21 Jan 2026 17:00:28 -0500
+Subject: Add svg guard code to wxSmith
+
+---
+ src/plugins/contrib/wxSmith/wxsresourcetree.cpp      |  6 ++++++
+ .../wxSmith/wxwidgets/defitems/wxscustomwidget.cpp   |  5 +++++
+ .../wxSmith/wxwidgets/defitems/wxsmenuitem.cpp       | 12 +++++++++++-
+ .../contrib/wxSmith/wxwidgets/defitems/wxsspacer.cpp |  5 +++++
+ .../wxSmith/wxwidgets/defitems/wxstoolbaritem.cpp    | 12 +++++++++++-
+ .../contrib/wxSmith/wxwidgets/wxsitemresdata.cpp     |  4 ++++
+ 6 files changed, 42 insertions(+), 2 deletions(-)
+
+diff --git a/src/plugins/contrib/wxSmith/wxsresourcetree.cpp b/src/plugins/contrib/wxSmith/wxsresourcetree.cpp
+index 8295e13cc..a8e3562e6 100644
+--- a/src/plugins/contrib/wxSmith/wxsresourcetree.cpp
++++ b/src/plugins/contrib/wxSmith/wxsresourcetree.cpp
+@@ -51,9 +51,15 @@ namespace
+ }
+ 
+ wxsResourceTree* wxsResourceTree::m_Singleton = nullptr;
++#if wxCHECK_VERSION(3, 1, 6)
++int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/wxsmith/wxSmith16.svg"));
++int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.svg"));
++int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.svg"));
++#else
+ int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/wxsmith/wxSmith16.png"));
+ int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.png"));
+ int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.png"));
++#endif
+ 
+ 
+ BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxscustomwidget.cpp b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxscustomwidget.cpp
+index 1ef204d48..b2281c463 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxscustomwidget.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxscustomwidget.cpp
+@@ -34,8 +34,13 @@ namespace
+         _T("Custom"),
+         wxsCPP,
+         0,0,
++#if wxCHECK_VERSION(3, 1, 6)
++        _T("images/wxsmith/Custom32.svg"),
++        _T("images/wxsmith/Custom16.svg"));
++#else
+         _T("images/wxsmith/Custom32.png"),
+         _T("images/wxsmith/Custom16.png"));
++#endif
+ 
+     WXS_EV_BEGIN(wxsCustomWidgetEvents)
+         WXS_EV_DEFAULTS()
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsmenuitem.cpp b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsmenuitem.cpp
+index a0baaf14a..b579ae331 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsmenuitem.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsmenuitem.cpp
+@@ -30,7 +30,12 @@ namespace
+     {
+         public:
+ 
+-            InfoHandler(): m_TreeImage(_T("images/wxsmith/wxMenuItem16.png"),true)
++            InfoHandler(): 
++#if wxCHECK_VERSION(3, 1, 6)
++                m_TreeImage(_T("images/wxsmith/wxMenuItem16.svg"),true)
++#else
++                m_TreeImage(_T("images/wxsmith/wxMenuItem16.png"),true)
++#endif
+             {
+                 ClassName      = _T("wxMenuItem");
+                 Type           = wxsTTool;
+@@ -49,8 +54,13 @@ namespace
+                 // TODO: This code should be more generic since it may quickly
+                 //       become invalid
+                 wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
++#if wxCHECK_VERSION(3, 1, 6)
++                Icon32.LoadFile(DataPath+_T("wxMenuItem32.svg"),wxBITMAP_TYPE_ANY);
++                Icon16.LoadFile(DataPath+_T("wxMenuItem16.svg"),wxBITMAP_TYPE_ANY);
++#else
+                 Icon32.LoadFile(DataPath+_T("wxMenuItem32.png"),wxBITMAP_TYPE_PNG);
+                 Icon16.LoadFile(DataPath+_T("wxMenuItem16.png"),wxBITMAP_TYPE_PNG);
++#endif
+                 TreeIconId = m_TreeImage.GetIndex();
+             };
+ 
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsspacer.cpp b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsspacer.cpp
+index cb023f9a7..de528b98a 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsspacer.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsspacer.cpp
+@@ -38,8 +38,13 @@ namespace
+         _T(""),
+         wxsCPP,
+         2,6,
++#if wxCHECK_VERSION(3, 1, 6)
++        _T("images/wxsmith/Spacer32.svg"),
++        _T("images/wxsmith/Spacer16.svg"));
++#else
+         _T("images/wxsmith/Spacer32.png"),
+         _T("images/wxsmith/Spacer16.png"));
++#endif
+ 
+     class wxsSpacerPreview : public wxPanel
+     {
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstoolbaritem.cpp b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstoolbaritem.cpp
+index 21e363e5f..95a30d413 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstoolbaritem.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstoolbaritem.cpp
+@@ -28,7 +28,12 @@ namespace
+     {
+         public:
+ 
+-            InfoHandler(): m_TreeImage(_T("images/wxsmith/wxToolBarItem16.png"),true)
++            InfoHandler():
++#if wxCHECK_VERSION(3, 1, 6)
++                m_TreeImage(_T("images/wxsmith/wxToolBarItem16.svg"),true)
++#else
++                m_TreeImage(_T("images/wxsmith/wxToolBarItem16.png"),true)
++#endif
+             {
+                 ClassName      = _T("wxToolBarToolBase");
+                 Type           = wxsTTool;
+@@ -47,8 +52,13 @@ namespace
+                 // TODO: This code should be more generic since it may quickly
+                 //       become invalid
+                 wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
++#if wxCHECK_VERSION(3, 1, 6)
++                Icon32.LoadFile(DataPath+_T("wxToolBarItem32.svg"),wxBITMAP_TYPE_ANY);
++                Icon16.LoadFile(DataPath+_T("wxToolBarItem16.svg"),wxBITMAP_TYPE_ANY);
++#else
+                 Icon32.LoadFile(DataPath+_T("wxToolBarItem32.png"),wxBITMAP_TYPE_PNG);
+                 Icon16.LoadFile(DataPath+_T("wxToolBarItem16.png"),wxBITMAP_TYPE_PNG);
++#endif
+                 TreeIconId = m_TreeImage.GetIndex();
+             };
+ 
+diff --git a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemresdata.cpp b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemresdata.cpp
+index 143729fa4..88c5c5397 100644
+--- a/src/plugins/contrib/wxSmith/wxwidgets/wxsitemresdata.cpp
++++ b/src/plugins/contrib/wxSmith/wxwidgets/wxsitemresdata.cpp
+@@ -44,7 +44,11 @@ using namespace wxsFlags;
+ 
+ namespace
+ {
++#if wxCHECK_VERSION(3, 1, 6)
++    const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("images/wxsmith/tools16.svg"));
++#else
+     const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("images/wxsmith/tools16.png"));
++#endif
+ }
+ 
+ wxsItemResData::wxsItemResData(
+-- 
+2.51.2.windows.1
+

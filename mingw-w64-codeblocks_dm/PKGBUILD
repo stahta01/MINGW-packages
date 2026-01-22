@@ -12,7 +12,7 @@ _realname=codeblocks_darkmode
 pkgbase=mingw-w64-${_basename}_dm
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 _basever=25.03
-pkgver=25.03.r13672
+pkgver=25.03.r13772
 pkgrel=1
 _sourcedir=${_basename}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
@@ -40,8 +40,12 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
 optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client plugin"
             "${MINGW_PACKAGE_PREFIX}-cppcheck: needed by cppcheck plugin")
 source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
+        '001-Add-svg-guard-code-to-wxSmith.patch'
+        '002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch'
         '101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch')
 sha256sums=('SKIP'
+            'd494792fe7cc45a6da51256b9b912006f9543cb3205991e46c58479f417ce587'
+            'b0831d511620cf8c09655baf7626ee08f1a6e7c4677e4b6238963c6ba92482f0'
             'dc662f789f2e9c830440adf7031a36f81813994c66c12b69a363016bddf3f16c')
 
 apply_patch_with_msg() {
@@ -65,6 +69,8 @@ pkgver() {
 prepare() {
   cd "${_sourcedir}"
 
+  apply_patch_with_msg 002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch \
+                       001-Add-svg-guard-code-to-wxSmith.patch
   apply_patch_with_msg 101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch
 
   ./bootstrap
