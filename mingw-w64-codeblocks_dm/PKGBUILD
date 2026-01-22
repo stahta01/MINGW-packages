@@ -69,8 +69,8 @@ pkgver() {
 prepare() {
   cd "${_sourcedir}"
 
-  apply_patch_with_msg 002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch \
-                       001-Add-svg-guard-code-to-wxSmith.patch
+  apply_patch_with_msg 002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch
+  #apply_patch_with_msg 001-Add-svg-guard-code-to-wxSmith.patch
   apply_patch_with_msg 101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch
 
   ./bootstrap
