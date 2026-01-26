@@ -12,7 +12,7 @@ _realname=codeblocks_darkmode
 pkgbase=mingw-w64-${_basename}_dm
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 _basever=25.03
-pkgver=25.03.r13776
+pkgver=25.03.r13777
 pkgrel=1
 _sourcedir=${_basename}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
@@ -45,7 +45,7 @@ source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
         '101-MSWEnableDarkMode-DarkMode_Always-in-OnInit.patch')
 sha256sums=('SKIP'
             'b0831d511620cf8c09655baf7626ee08f1a6e7c4677e4b6238963c6ba92482f0'
-            '393e23460efd0889027f686982e34c542436595aead0f42b1cc3191f05d3acdf'
+            'a673901ab7fb8aede8d0f6f8b37a0eb5dabb48226ca79c5380cccd7a4a3783a4'
             'dc662f789f2e9c830440adf7031a36f81813994c66c12b69a363016bddf3f16c')
 
 apply_patch_with_msg() {
