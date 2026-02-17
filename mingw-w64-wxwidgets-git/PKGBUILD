@@ -26,7 +26,7 @@ pkgname=(
   $([[ "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs${_namesuffix}")
   $([[ "$_build_qt" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt${_namesuffix}")
 )
-pkgver=3.3.2.0.v+722.c2.g8245e1073ae
+pkgver=3.3.2.0.v+855.c2.gde25991f88c
 pkgrel=1
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
 arch=('any')
