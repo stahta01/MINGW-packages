@@ -361,6 +361,12 @@ package_wxwidgets3.3-msw-git() {
   sed -s "s|${MINGW_PREFIX_WIN}|\$\{prefix\}|g" -i "${pkgdir}${MINGW_PREFIX}/lib/wx/config/msw-unicode-${_wx_basever}"
   sed -s "s|${MINGW_PREFIX_WIN}|\$\{prefix\}|g" -i "${pkgdir}${MINGW_PREFIX}/lib/wx/config/msw-unicode-static-${_wx_basever}"
 
+  # The correct compiler option is "-pthread"; CLANG gives many warning on "-lpthread" as an compiler flag
+  sed -s "s|_cppflags -lpthread|_cppflags -pthread|g" -i "${pkgdir}${MINGW_PREFIX}/bin/wx-config"
+  sed -s "s|_cppflags -lpthread|_cppflags -pthread|g" -i "${pkgdir}${MINGW_PREFIX}/bin/wx-config-static"
+  sed -s "s|_cppflags -lpthread|_cppflags -pthread|g" -i "${pkgdir}${MINGW_PREFIX}/lib/wx/config/msw-unicode-${_wx_basever}"
+  sed -s "s|_cppflags -lpthread|_cppflags -pthread|g" -i "${pkgdir}${MINGW_PREFIX}/lib/wx/config/msw-unicode-static-${_wx_basever}"
+
   # Workaround for https://github.com/wxWidgets/wxWidgets/issues/23314
   if [[ ${MSYSTEM} == CLANG* ]]; then
     sed -s "s|\"-mthreads\"|\"\"|g" -i "${pkgdir}${MINGW_PREFIX}/bin/wx-config"
