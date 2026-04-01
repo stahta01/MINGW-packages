@@ -330,7 +330,7 @@ package_wxwidgets3.3-msw-git() {
   pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
   depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw-libs"
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
-  provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}"
+  provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-msw"
             "${MINGW_PACKAGE_PREFIX}-wxwidgets-msw")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets-msw")
 
