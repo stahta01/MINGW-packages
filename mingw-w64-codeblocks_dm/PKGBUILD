@@ -12,7 +12,7 @@ _realname=codeblocks_darkmode
 pkgbase=mingw-w64-${_basename}_dm
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 _basever=25.03
-pkgver=25.03.r13831
+pkgver=25.03.r13832
 pkgrel=1
 _sourcedir=${_basename}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
@@ -41,10 +41,12 @@ optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client 
             "${MINGW_PACKAGE_PREFIX}-cppcheck: needed by cppcheck plugin")
 source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
         '002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch'
-        '003-Add-guard-around-defining-wxOVERRIDE.patch')
+        '003-Add-guard-around-defining-wxOVERRIDE.patch'
+        '201-Edit-Makefile.am-remove-wxchart-stuff.patch')
 sha256sums=('SKIP'
             'b0831d511620cf8c09655baf7626ee08f1a6e7c4677e4b6238963c6ba92482f0'
-            'a673901ab7fb8aede8d0f6f8b37a0eb5dabb48226ca79c5380cccd7a4a3783a4')
+            'a673901ab7fb8aede8d0f6f8b37a0eb5dabb48226ca79c5380cccd7a4a3783a4'
+            '2f8081f6638245031de518fa9400f5b39b4e25c0658cd0e7c981d76174fd1300')
 
 apply_patch_with_msg() {
   for _patch in "$@"
@@ -69,6 +71,7 @@ prepare() {
 
   #apply_patch_with_msg 002-Update-to-version-3.3.1-to-guard-wxPGFlags.patch
   apply_patch_with_msg 003-Add-guard-around-defining-wxOVERRIDE.patch
+  apply_patch_with_msg 201-Edit-Makefile.am-remove-wxchart-stuff.patch
 
   ./bootstrap
 }
