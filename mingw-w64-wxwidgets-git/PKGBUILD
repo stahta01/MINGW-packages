@@ -25,7 +25,7 @@ pkgname=(
   $([[ "$MSYSTEM_CARCH" != "i686" ]] && echo "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt${_namesuffix}")
 )
 pkgver=3.3.3.0.v+212.c2.g8a41fd01d1c
-pkgrel=1
+pkgrel=2
 pkgdesc="A C++ library that lets developers create applications for Windows, Linux and UNIX (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64')
@@ -417,7 +417,7 @@ package_wxwidgets3.3-gtk3-libs-git() {
 
 package_wxwidgets3.3-gtk3-git() {
   pkgdesc="GTK+3 implementation of wxWidgets ${_wx_basever} C++ GUI API (mingw-w64)"
-  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3-libs"
+  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-gtk3-libs-git"
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
   provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets-gtk3")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets-gtk3")
@@ -464,7 +464,7 @@ package_wxwidgets3.3-qt-libs-git() {
 
 package_wxwidgets3.3-qt-git() {
   pkgdesc="Qt implementation of wxWidgets ${_wx_basever} C++ GUI API (mingw-w64)"
-  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs"
+  depends=("${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-qt-libs-git"
            "${MINGW_PACKAGE_PREFIX}-wxwidgets${_wx_basever}-common")
   provides=("${MINGW_PACKAGE_PREFIX}-wxwidgets-qt")
   conflicts=("${MINGW_PACKAGE_PREFIX}-wxwidgets-qt")
