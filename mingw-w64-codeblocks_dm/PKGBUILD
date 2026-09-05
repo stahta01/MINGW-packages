@@ -18,7 +18,7 @@ _sourcedir=${_basename}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
 options=('!strip' 'debug')
 arch=('any')
-mingw_arch=('ucrt64' 'clang64' 'mingw64' 'mingw32')
+mingw_arch=('ucrt64' 'clang64')
 url='https://www.codeblocks.org/'
 msys2_repository_url="https://sourceforge.net/p/codeblocks/code/HEAD/tree/trunk/"
 msys2_references=(
@@ -80,7 +80,7 @@ build() {
   ../${_sourcedir}/configure \
     --prefix="${MINGW_PREFIX}" \
     --disable-pch \
-    --with-contrib-plugins=all,-Valgrind,-debugger_gdbmi # debugger_gdbmi has a tinyxml link error should be an easy fix
+    --with-contrib-plugins=all,-Valgrind,-debugger_gdbmi,-exporter # debugger_gdbmi has a tinyxml link error should be an easy fix; exporter failes under clang64
 
   make #--jobs=1
 
