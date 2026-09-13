@@ -12,7 +12,7 @@ _realname=codeblocks-git
 pkgbase=mingw-w64-${_basename}_dm
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 _basever=25.03
-pkgver=25.03.r14015
+pkgver=25.03.r14018
 pkgrel=1
 _sourcedir=${_basename}-git
 pkgdesc="Cross-platform C/C++ IDE (mingw-w64)"
@@ -42,7 +42,7 @@ optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: needed by Clangd_Client 
 source=(${_sourcedir}::"git+https://github.com/arnholm/codeblocks_sfmirror.git"
         '003-fix-link-to-tinyxml.patch')
 sha256sums=('SKIP'
-            '8b7db956917fa00e7a4ddbb328525e895663580f914a5b56ffffadd41fce8409')
+            '9457e25cba10632cd501e870010244eb8d7b150e0e3aee73879ed4e03e50eb69')
 
 apply_patch_with_msg() {
   for _patch in "$@"
@@ -80,7 +80,7 @@ build() {
   ../${_sourcedir}/configure \
     --prefix="${MINGW_PREFIX}" \
     --disable-pch \
-    --with-contrib-plugins=all,-Valgrind,-debugger_gdbmi # debugger_gdbmi has a tinyxml link error should be an easy fix; exporter fails under clang64
+    --with-contrib-plugins=all,-Valgrind
 
   make #--jobs=1
 

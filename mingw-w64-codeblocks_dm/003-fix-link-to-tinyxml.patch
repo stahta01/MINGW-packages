@@ -223,3 +223,16 @@
  libprojectsimporter_la_SOURCES = projectsimporter.cpp \
  				devcpploader.cpp \
  				msvc10loader.cpp \
+diff --git a/src/plugins/contrib/debugger_gdbmi/Makefile.am b/src/plugins/contrib/debugger_gdbmi/Makefile.am
+index b3d240544..cb0fbd40b 100644
+--- a/src/plugins/contrib/debugger_gdbmi/Makefile.am
++++ b/src/plugins/contrib/debugger_gdbmi/Makefile.am
+@@ -26,6 +26,8 @@ libdebugger_gdbmi_la_LIBADD = \
+
+ if ! CODEBLOCKS_NT
+ libdebugger_gdbmi_la_LIBADD += -lutil $(CB_TINYXML_LIBS)
++else
++libdebugger_gdbmi_la_LIBADD += $(CB_TINYXML_LIBS)
+ endif
+
+ libdebugger_gdbmi_la_SOURCES = \
